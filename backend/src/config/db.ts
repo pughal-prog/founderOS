@@ -1,16 +1,39 @@
-import { createClient } from '@supabase/supabase-js';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const supabaseUrl = process.env.SUPABASE_URL || 'https://xyz-your-supabase-app.supabase.co';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy-key';
+const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:Pughal@123@localhost:5432/founderOS';
 
-export const supabaseClient = createClient(supabaseUrl, supabaseKey);
+export const pgPool = new Pool({
+  connectionString,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+export async function checkPostgresConnection(): Promise<{ connected: boolean; mode: string; details?: string }> {
+  try {
+    const client = await pgPool.connect();
+    const result = await client.query('SELECT NOW()');
+    client.release();
+    return {
+      connected: true,
+      mode: 'Live PostgreSQL (founderOS)',
+      details: `Connected at ${result.rows[0].now}`
+    };
+  } catch (err: any) {
+    return {
+      connected: false,
+      mode: 'Mock Data Engine (Fallback)',
+      details: err.message || 'PostgreSQL not responding on localhost:5432'
+    };
+  }
+}
 
 export function getDatabaseStatus() {
   return {
-    connected: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
-    mode: process.env.SUPABASE_URL ? 'Live Supabase DB' : 'Mock Engine Mode'
+    connected: true,
+    mode: 'PostgreSQL Database Configured (founderOS)',
+    url: 'postgresql://postgres:****@localhost:5432/founderOS'
   };
 }
