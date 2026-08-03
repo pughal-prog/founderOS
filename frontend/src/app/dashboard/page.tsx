@@ -58,7 +58,7 @@ export default function DashboardPage() {
     : mockCustomers.filter(c => c.status === customerFilter);
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white">
       
       {/* Top Navbar */}
       <Navbar />
@@ -73,33 +73,33 @@ export default function DashboardPage() {
         <main className="flex-1 p-4 sm:p-8 overflow-y-auto space-y-8">
           
           {/* Executive Welcome & Control Banner */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-panel p-6 rounded-3xl border border-cyan-500/30 bg-slate-900/90 relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-panel p-6 rounded-3xl border border-slate-200 bg-white relative overflow-hidden shadow-sm">
             <div className="space-y-1 z-10">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">Founder OS Workspace</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-700">Founder OS Workspace</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
                   8/9 Apps Synced
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
                 Executive SaaS Command Center
               </h1>
-              <p className="text-xs sm:text-sm text-slate-300">
+              <p className="text-xs sm:text-sm text-slate-600">
                 Real-time telemetry across Gmail, Slack, Notion, Stripe, & Google Calendar.
               </p>
             </div>
 
             {/* Interactive Time Range Filters */}
             <div className="flex items-center gap-3 z-10">
-              <div className="flex rounded-xl bg-slate-950 p-1 border border-slate-800 text-xs font-semibold">
+              <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-semibold">
                 {(['1M', '3M', '1Y'] as const).map((r) => (
                   <button
                     key={r}
                     onClick={() => setTimeRange(r)}
                     className={`px-3 py-1.5 rounded-lg transition-all ${
                       timeRange === r 
-                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm' 
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-blue-600 text-white shadow-sm font-bold' 
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     {r}
@@ -109,8 +109,8 @@ export default function DashboardPage() {
 
               <button
                 onClick={handleRefresh}
-                className={`p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-slate-300 hover:text-white transition-all ${
-                  isRefreshing ? 'animate-spin text-cyan-400' : ''
+                className={`p-2.5 rounded-xl bg-white border border-slate-200 hover:border-blue-400 text-slate-700 transition-all shadow-sm ${
+                  isRefreshing ? 'animate-spin text-blue-600' : ''
                 }`}
                 title="Refresh All Feeds"
               >
@@ -119,9 +119,9 @@ export default function DashboardPage() {
 
               <Link
                 href="/chat"
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 hover:scale-105 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/30 transition-all"
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:scale-105 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all"
               >
-                <Sparkles className="w-4 h-4 text-cyan-200 animate-pulse" />
+                <Sparkles className="w-4 h-4 text-blue-100 animate-pulse" />
                 <span>Ask AI Assistant</span>
               </Link>
             </div>
@@ -136,7 +136,7 @@ export default function DashboardPage() {
               isPositive={true}
               subtitle="Synced from Stripe"
               icon={DollarSign}
-              iconColor="text-cyan-400 bg-cyan-500/10 border-cyan-500/30"
+              iconColor="text-blue-700 bg-blue-50 border-blue-200"
             />
             <MetricCard
               title="MRR"
@@ -145,7 +145,7 @@ export default function DashboardPage() {
               isPositive={true}
               subtitle="Net recurring revenue"
               icon={TrendingUp}
-              iconColor="text-indigo-400 bg-indigo-500/10 border-indigo-500/30"
+              iconColor="text-indigo-700 bg-indigo-50 border-indigo-200"
             />
             <MetricCard
               title="Active Customers"
@@ -154,21 +154,21 @@ export default function DashboardPage() {
               isPositive={true}
               subtitle="Enterprise accounts"
               icon={Users}
-              iconColor="text-emerald-400 bg-emerald-500/10 border-emerald-500/30"
+              iconColor="text-emerald-700 bg-emerald-50 border-emerald-200"
             />
             <MetricCard
               title="Meetings Today"
               value="3"
               subtitle="Sequoia investor call"
               icon={Calendar}
-              iconColor="text-purple-400 bg-purple-500/10 border-purple-500/30"
+              iconColor="text-purple-700 bg-purple-50 border-purple-200"
             />
             <MetricCard
               title="Pending Tasks"
               value="4 Tasks"
               subtitle="2 high priority"
               icon={CheckSquare}
-              iconColor="text-amber-400 bg-amber-500/10 border-amber-500/30"
+              iconColor="text-amber-700 bg-amber-50 border-amber-200"
             />
             <MetricCard
               title="Unread Emails"
@@ -177,29 +177,29 @@ export default function DashboardPage() {
               isPositive={false}
               subtitle="Acme Inc (9d ago)"
               icon={Mail}
-              iconColor="text-red-400 bg-red-500/10 border-red-500/30"
+              iconColor="text-red-700 bg-red-50 border-red-200"
             />
           </div>
 
           {/* Quick Interactive Founder Action Banner */}
-          <div className="p-4 rounded-2xl glass-panel bg-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="p-4 rounded-2xl glass-panel bg-white border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs shadow-sm">
             <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-amber-400" />
-              <span className="font-bold text-white">Interactive Actions Ready:</span>
-              <span className="text-slate-400">Click to execute actions across your connected tools</span>
+              <Zap className="w-4 h-4 text-amber-500" />
+              <span className="font-bold text-slate-900">Interactive Actions Ready:</span>
+              <span className="text-slate-600">Click to execute actions across your connected tools</span>
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => openModal('Draft Follow-up Email to Acme Inc.', 'email', { email: 'sarah@acme.com', notes: 'Hi Sarah,\n\nFollowing up on our SOC-2 security compliance audit questionnaire sent 9 days ago. Let me know if you need any additional specs.\n\nBest,\nAlex Vance' })}
-                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-cyan-500/20 text-cyan-300 border border-slate-700 hover:border-cyan-500/40 font-semibold transition-colors flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-semibold transition-colors flex items-center gap-1.5"
               >
                 <Mail className="w-3.5 h-3.5" />
                 <span>Draft Email to Acme Inc. (9d Unreplied)</span>
               </button>
               <button
                 onClick={() => openModal('Trigger Stripe Invoice Reminder', 'invoice')}
-                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-red-500/20 text-red-300 border border-slate-700 hover:border-red-500/40 font-semibold transition-colors flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-semibold transition-colors flex items-center gap-1.5"
               >
                 <DollarSign className="w-3.5 h-3.5" />
                 <span>Send Overdue Invoice Reminder</span>
@@ -221,23 +221,23 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             {/* Customer Risk Overview with Interactive Filter Tabs */}
-            <div className="lg:col-span-6 glass-panel p-6 rounded-3xl border border-slate-800 space-y-4 bg-slate-900/90" id="customers">
+            <div className="lg:col-span-6 glass-panel p-6 rounded-3xl border border-slate-200 space-y-4 bg-white shadow-sm" id="customers">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-sm font-bold text-white">Customers & Risk Watchlist</h3>
-                  <p className="text-xs text-slate-400">Synthesized from HubSpot CRM & Stripe</p>
+                  <h3 className="text-sm font-bold text-slate-900">Customers & Risk Watchlist</h3>
+                  <p className="text-xs text-slate-500">Synthesized from HubSpot CRM & Stripe</p>
                 </div>
 
                 {/* Filter Tabs */}
-                <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-semibold">
+                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-[11px] font-semibold">
                   {(['all', 'at-risk', 'active', 'prospect'] as const).map((f) => (
                     <button
                       key={f}
                       onClick={() => setCustomerFilter(f)}
                       className={`px-2.5 py-1 rounded-lg capitalize transition-all ${
                         customerFilter === f
-                          ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-                          : 'text-slate-400 hover:text-white'
+                          ? 'bg-blue-600 text-white font-bold shadow-sm'
+                          : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
                       {f}
@@ -248,27 +248,27 @@ export default function DashboardPage() {
 
               <div className="space-y-3">
                 {filteredCustomers.map((c) => (
-                  <div key={c.id} className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between hover:border-slate-700 transition-colors">
+                  <div key={c.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between hover:border-blue-300 transition-colors">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white">{c.company}</span>
+                        <span className="text-xs font-bold text-slate-900">{c.company}</span>
                         <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded border ${
                           c.status === 'at-risk' 
-                            ? 'bg-red-500/20 text-red-300 border-red-500/30' 
+                            ? 'bg-red-50 text-red-700 border-red-200' 
                             : c.status === 'active'
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                            : 'bg-slate-800 text-slate-400 border-slate-700'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : 'bg-slate-200 text-slate-700 border-slate-300'
                         }`}>
                           {c.status}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5">{c.notes}</p>
+                      <p className="text-[11px] text-slate-600 mt-0.5">{c.notes}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono text-cyan-400 font-bold">${c.mrr}/mo</span>
+                      <span className="text-xs font-mono text-blue-700 font-bold">${c.mrr}/mo</span>
                       <button
                         onClick={() => openModal(`Contact ${c.company}`, 'email', c)}
-                        className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-cyan-500/40 text-[11px] font-semibold transition-colors"
+                        className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 text-[11px] font-semibold transition-colors shadow-sm"
                       >
                         Action
                       </button>
@@ -279,27 +279,27 @@ export default function DashboardPage() {
             </div>
 
             {/* Meetings & Today Schedule */}
-            <div className="lg:col-span-6 glass-panel p-6 rounded-3xl border border-slate-800 space-y-4 bg-slate-900/90" id="meetings">
+            <div className="lg:col-span-6 glass-panel p-6 rounded-3xl border border-slate-200 space-y-4 bg-white shadow-sm" id="meetings">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-white">Google Calendar Schedule</h3>
-                  <p className="text-xs text-slate-400">Founder meetings & investor catchups</p>
+                  <h3 className="text-sm font-bold text-slate-900">Google Calendar Schedule</h3>
+                  <p className="text-xs text-slate-500">Founder meetings & investor catchups</p>
                 </div>
-                <span className="text-xs text-emerald-400 font-mono">Today</span>
+                <span className="text-xs text-emerald-700 font-mono font-bold">Today</span>
               </div>
 
               <div className="space-y-3">
                 {mockMeetings.map((m) => (
-                  <div key={m.id} className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between hover:border-slate-700 transition-colors">
+                  <div key={m.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between hover:border-blue-300 transition-colors">
                     <div>
-                      <span className="text-[10px] font-mono text-cyan-400 font-bold block">{m.time}</span>
-                      <span className="text-xs font-bold text-white">{m.title}</span>
-                      <p className="text-[11px] text-slate-400">{m.participant}</p>
+                      <span className="text-[10px] font-mono text-blue-700 font-bold block">{m.time}</span>
+                      <span className="text-xs font-bold text-slate-900">{m.title}</span>
+                      <p className="text-[11px] text-slate-600">{m.participant}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => openModal(`AI Briefing: ${m.title}`, 'meeting', m)}
-                        className="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-800 transition-colors"
+                        className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 text-xs font-semibold border border-slate-200 shadow-sm transition-colors"
                       >
                         Prep
                       </button>
@@ -307,7 +307,7 @@ export default function DashboardPage() {
                         href={m.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-cyan-500/20 text-cyan-300 text-xs font-semibold border border-slate-700 hover:border-cyan-500/40 transition-colors"
+                        className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold border border-blue-200 transition-colors"
                       >
                         Join Meet
                       </a>

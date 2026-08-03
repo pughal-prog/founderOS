@@ -79,7 +79,7 @@ export default function AIChatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white">
       
       {/* Top Navbar */}
       <Navbar />
@@ -91,33 +91,33 @@ export default function AIChatPage() {
         <Sidebar />
 
         {/* Chat Main Interface */}
-        <main className="flex-1 flex flex-col justify-between bg-slate-950/40 relative overflow-hidden">
+        <main className="flex-1 flex flex-col justify-between bg-white relative overflow-hidden">
           
           {/* Header Bar */}
-          <div className="p-4 bg-slate-900/90 border-b border-slate-800/80 flex items-center justify-between text-xs z-10 shrink-0">
+          <div className="p-4 bg-white border-b border-slate-200 flex items-center justify-between text-xs z-10 shrink-0 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center shadow-sm">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-sm">
                 <Brain className="w-4.5 h-4.5 text-white" />
               </div>
               <div>
-                <span className="font-bold text-white text-sm block">{activeThread}</span>
-                <span className="text-[10px] text-emerald-400 font-mono">Cross-Tool Index Active</span>
+                <span className="font-bold text-slate-900 text-sm block">{activeThread}</span>
+                <span className="text-[10px] text-emerald-700 font-mono font-bold">Cross-Tool Index Active</span>
               </div>
             </div>
 
             {/* Context Dropdown & New Session */}
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                <Filter className="w-3.5 h-3.5 text-cyan-400" />
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-semibold">
+                <Filter className="w-3.5 h-3.5 text-blue-600" />
                 <select
                   value={selectedContext}
                   onChange={(e) => setSelectedContext(e.target.value)}
-                  className="bg-transparent text-cyan-300 font-semibold focus:outline-none cursor-pointer text-xs"
+                  className="bg-transparent text-blue-700 font-bold focus:outline-none cursor-pointer text-xs"
                 >
-                  <option value="All 9 Connected SaaS Tools" className="bg-slate-900 text-white">All 9 Connected SaaS Tools</option>
-                  <option value="Stripe Billing Only" className="bg-slate-900 text-white">Stripe Billing Only</option>
-                  <option value="HubSpot CRM Only" className="bg-slate-900 text-white">HubSpot CRM Only</option>
-                  <option value="Gmail Inbox Feed" className="bg-slate-900 text-white">Gmail Inbox Feed</option>
+                  <option value="All 9 Connected SaaS Tools" className="bg-white text-slate-900">All 9 Connected SaaS Tools</option>
+                  <option value="Stripe Billing Only" className="bg-white text-slate-900">Stripe Billing Only</option>
+                  <option value="HubSpot CRM Only" className="bg-white text-slate-900">HubSpot CRM Only</option>
+                  <option value="Gmail Inbox Feed" className="bg-white text-slate-900">Gmail Inbox Feed</option>
                 </select>
               </div>
 
@@ -128,16 +128,16 @@ export default function AIChatPage() {
                   text: 'New FounderOS session started. What business question would you like to ask?',
                   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }])}
-                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-200"
               >
-                <PlusCircle className="w-3.5 h-3.5 text-cyan-400" />
+                <PlusCircle className="w-3.5 h-3.5 text-blue-600" />
                 <span>New Session</span>
               </button>
             </div>
           </div>
 
           {/* Chat Stream */}
-          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-6">
+          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-6 bg-slate-50/50">
             {messages.map((msg) => (
               <ChatBubble
                 key={msg.id}
@@ -147,8 +147,8 @@ export default function AIChatPage() {
             ))}
 
             {isStreaming && (
-              <div className="flex items-center gap-3 max-w-4xl mx-auto text-cyan-400 text-xs p-4 glass-panel rounded-2xl border-cyan-500/30 bg-slate-900/90 animate-pulse">
-                <Brain className="w-5 h-5 animate-spin text-cyan-400" />
+              <div className="flex items-center gap-3 max-w-4xl mx-auto text-blue-700 text-xs p-4 glass-panel rounded-2xl border-slate-200 bg-white animate-pulse shadow-sm font-semibold">
+                <Brain className="w-5 h-5 animate-spin text-blue-600" />
                 <span>FounderOS is indexing Gmail, Slack, Notion, Stripe, & Google Calendar data...</span>
               </div>
             )}
