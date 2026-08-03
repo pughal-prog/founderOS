@@ -7,6 +7,7 @@ import Sidebar from '@/components/layout/Sidebar';
 import ChatBubble from '@/components/chat/ChatBubble';
 import MessageInput from '@/components/chat/MessageInput';
 import SuggestedPrompts from '@/components/chat/SuggestedPrompts';
+import ActionModal from '@/components/ui/ActionModal';
 import BrainOverlayWidget from '@/components/BrainOverlayWidget';
 import { processFounderQuery } from '@/services/aiService';
 import { ChatMessage } from '@/types';
@@ -19,12 +20,20 @@ import {
   Layers, 
   Zap, 
   Clock, 
-  Bot 
+  Bot,
+  Filter
 } from 'lucide-react';
 
 export default function AIChatPage() {
   const [activeThread, setActiveThread] = useState('Unreplied Customers & Risk Audit');
   const [isStreaming, setIsStreaming] = useState(false);
+  const [selectedContext, setSelectedContext] = useState('All 9 Connected SaaS Tools');
+  
+  // Action Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalType, setModalType] = useState<'email' | 'meeting' | 'invoice' | 'view'>('email');
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'init-1',
@@ -37,13 +46,6 @@ export default function AIChatPage() {
       }
     }
   ]);
-
-  const pastThreads = [
-    'Unreplied Customers & Risk Audit',
-    'Tomorrow\'s Calendar Prep',
-    'Overdue Stripe Invoices',
-    'MRR Breakdown by Segment'
-  ];
 
   const handleSendMessage = async (queryText: string) => {
     if (!queryText.trim()) return;
@@ -66,20 +68,14 @@ export default function AIChatPage() {
     setTimeout(() => {
       setMessages((prev) => [...prev, aiResponse]);
       setIsStreaming(false);
-    }, 800);
+    }, 700);
   };
 
   const handleActionClick = (action: ChatMessage['suggestedAction']) => {
     if (!action) return;
-    if (action.actionType === 'email') {
-      alert(`Drafting follow-up email to Acme Inc. (sarah@acme.com)...`);
-    } else if (action.actionType === 'meeting') {
-      window.open('https://meet.google.com', '_blank');
-    } else if (action.actionType === 'invoice') {
-      alert(`Sending automated invoice reminder via Stripe API...`);
-    } else {
-      alert(`Navigating to detailed dashboard breakdown.`);
-    }
+    setModalTitle(action.label);
+    setModalType(action.actionType || 'view');
+    setModalOpen(true);
   };
 
   return (
@@ -109,7 +105,22 @@ export default function AIChatPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Context Dropdown & New Session */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                <Filter className="w-3.5 h-3.5 text-cyan-400" />
+                <select
+                  value={selectedContext}
+                  onChange={(e) => setSelectedContext(e.target.value)}
+                  className="bg-transparent text-cyan-300 font-semibold focus:outline-none cursor-pointer text-xs"
+                >
+                  <option value="All 9 Connected SaaS Tools" className="bg-slate-900 text-white">All 9 Connected SaaS Tools</option>
+                  <option value="Stripe Billing Only" className="bg-slate-900 text-white">Stripe Billing Only</option>
+                  <option value="HubSpot CRM Only" className="bg-slate-900 text-white">HubSpot CRM Only</option>
+                  <option value="Gmail Inbox Feed" className="bg-slate-900 text-white">Gmail Inbox Feed</option>
+                </select>
+              </div>
+
               <button
                 onClick={() => setMessages([{
                   id: Date.now().toString(),
@@ -151,6 +162,14 @@ export default function AIChatPage() {
 
         </main>
       </div>
+
+      {/* Action Modal */}
+      <ActionModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalTitle}
+        type={modalType}
+      />
 
       {/* Floating AI Brain Overlay Widget */}
       <BrainOverlayWidget />
