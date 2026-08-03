@@ -18,16 +18,24 @@ import {
   Eye,
   EyeOff,
   Users,
-  Lock
+  Lock,
+  Mail,
+  MessageSquare
 } from 'lucide-react';
 
 export default function SettingsPage() {
   const { userProfile, setUserProfile } = useFounderStore();
-  const [activeTab, setActiveTab] = useState<'profile' | 'api' | 'team' | 'security'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'api' | 'team' | 'notifications' | 'security'>('profile');
   const [openAiKey, setOpenAiKey] = useState(userProfile.openAiApiKey);
   const [supabaseUrl, setSupabaseUrl] = useState(userProfile.supabaseUrl);
   const [showApiKey, setShowApiKey] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+
+  // Notification Settings State (Phase 6)
+  const [emailDigest, setEmailDigest] = useState(true);
+  const [slackAlerts, setSlackAlerts] = useState(true);
+  const [invoiceWebhooks, setInvoiceWebhooks] = useState(true);
+  const [anomalySignals, setAnomalySignals] = useState(true);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +77,7 @@ export default function SettingsPage() {
                 FounderOS Workspace Settings
               </h1>
               <p className="text-xs text-slate-600 font-medium">
-                Manage OpenAI API keys, Supabase DB connection, and team permissions.
+                Manage OpenAI API keys, Supabase DB connection, team seats, and notification alerts.
               </p>
             </div>
             {savedSuccess && (
@@ -86,6 +94,7 @@ export default function SettingsPage() {
               { id: 'profile', label: 'Founder Profile', icon: User },
               { id: 'api', label: 'API Keys & Database', icon: Key },
               { id: 'team', label: 'Team Members (3)', icon: Users },
+              { id: 'notifications', label: 'Notification Settings', icon: Bell },
               { id: 'security', label: 'Security & Compliance', icon: ShieldCheck }
             ].map((tab) => {
               const Icon = tab.icon;
@@ -217,6 +226,56 @@ export default function SettingsPage() {
                       </span>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'notifications' && (
+              <div className="glass-panel p-6 rounded-3xl border border-slate-200 space-y-4 bg-white shadow-sm animate-in fade-in duration-150 text-xs">
+                <div className="flex items-center gap-2 pb-2 border-b border-slate-200">
+                  <Bell className="w-4 h-4 text-blue-600" />
+                  <h3 className="text-sm font-bold text-slate-900">Notification Alerts & Webhooks</h3>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div>
+                      <span className="font-bold text-slate-900 block">Daily Executive Email Digest</span>
+                      <span className="text-[11px] text-slate-500">Receive morning summary of unreplied emails and MRR shifts</span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={emailDigest}
+                      onChange={(e) => setEmailDigest(e.target.checked)}
+                      className="accent-blue-600 rounded"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div>
+                      <span className="font-bold text-slate-900 block">Slack Instant Alert Channel</span>
+                      <span className="text-[11px] text-slate-500">Dispatch alerts to #founder-os channel for at-risk accounts</span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={slackAlerts}
+                      onChange={(e) => setSlackAlerts(e.target.checked)}
+                      className="accent-blue-600 rounded"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div>
+                      <span className="font-bold text-slate-900 block">Stripe Overdue Invoice Webhook</span>
+                      <span className="text-[11px] text-slate-500">Automatically attempt payment retries on failed billing events</span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={invoiceWebhooks}
+                      onChange={(e) => setInvoiceWebhooks(e.target.checked)}
+                      className="accent-blue-600 rounded"
+                    />
+                  </div>
                 </div>
               </div>
             )}

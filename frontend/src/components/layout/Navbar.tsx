@@ -2,9 +2,25 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, Bell, Sparkles, User, Database, CheckCircle2, ChevronDown, X, LogOut, Settings, ExternalLink } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
+import { 
+  Search, 
+  Bell, 
+  Sparkles, 
+  User, 
+  Database, 
+  CheckCircle2, 
+  ChevronDown, 
+  X, 
+  LogOut, 
+  Settings, 
+  ExternalLink,
+  Sun,
+  Moon
+} from 'lucide-react';
 
 export default function Navbar() {
+  const { theme, toggleTheme } = useTheme();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -54,6 +70,19 @@ export default function Navbar() {
           </span>
           <span className="text-slate-800 font-semibold text-[11px]">8/9 Apps Synced</span>
         </Link>
+
+        {/* Theme Toggle Button (Phase 6) */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-xl bg-slate-100 border border-slate-200 hover:border-blue-300 text-slate-800 hover:bg-slate-200 transition-colors"
+          title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+        >
+          {theme === 'light' ? (
+            <Moon className="w-4 h-4 text-slate-700" />
+          ) : (
+            <Sun className="w-4 h-4 text-amber-500" />
+          )}
+        </button>
 
         {/* Notifications Icon Dropdown */}
         <div className="relative">
