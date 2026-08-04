@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { mockIntegrations } from '../data/mockData';
-import { IntegrationApp, Workspace, UserProfile } from '../types';
+import { mockIntegrations, mockClientTenants } from '../data/mockData';
+import { IntegrationApp, Workspace, UserProfile, ClientCompanyTenant } from '../types';
 
 const STORAGE_KEYS = {
   AUTH: 'founderos_auth',
   USER: 'founderos_user_profile',
   WORKSPACES: 'founderos_workspaces',
   CURRENT_WS_ID: 'founderos_current_ws_id',
-  INTEGRATIONS: 'founderos_integrations'
+  INTEGRATIONS: 'founderos_integrations',
+  CLIENT_TENANTS: 'founderos_client_tenants'
 };
 
 const defaultWorkspaces: Workspace[] = [
@@ -40,6 +41,7 @@ export function useFounderStore() {
   const [workspaces, setWorkspaces] = useState<Workspace[]>(defaultWorkspaces);
   const [currentWorkspaceId, setCurrentWorkspaceId] = useState<string>('ws-main');
   const [integrations, setIntegrations] = useState<IntegrationApp[]>(mockIntegrations);
+  const [clientTenants, setClientTenants] = useState<ClientCompanyTenant[]>(mockClientTenants);
   const [unreadNotifications, setUnreadNotifications] = useState(3);
 
   // Hydrate state from localStorage on client render
@@ -69,6 +71,11 @@ export function useFounderStore() {
       if (savedIntegrations) {
         setIntegrations(JSON.parse(savedIntegrations));
       }
+
+      const savedTenants = localStorage.getItem(STORAGE_KEYS.CLIENT_TENANTS);
+      if (savedTenants) {
+        setClientTenants(JSON.parse(savedTenants));
+      }
     } catch (e) {
       console.error('Error hydrating FounderOS state from localStorage:', e);
     } finally {
@@ -85,12 +92,46 @@ export function useFounderStore() {
       localStorage.setItem(STORAGE_KEYS.WORKSPACES, JSON.stringify(workspaces));
       localStorage.setItem(STORAGE_KEYS.CURRENT_WS_ID, currentWorkspaceId);
       localStorage.setItem(STORAGE_KEYS.INTEGRATIONS, JSON.stringify(integrations));
+      localStorage.setItem(STORAGE_KEYS.CLIENT_TENANTS, JSON.stringify(clientTenants));
     } catch (e) {
       console.error('Error saving FounderOS state to localStorage:', e);
     }
-  }, [isHydrated, isAuthenticated, userProfile, workspaces, currentWorkspaceId, integrations]);
+  }, [isHydrated, isAuthenticated, userProfile, workspaces, currentWorkspaceId, integrations, clientTenants]);
 
   const currentWorkspace = workspaces.find(w => w.id === currentWorkspaceId) || workspaces[0] || defaultWorkspaces[0];
+
+  // Tenant Actions for SaaS Super Admin
+  const toggleTenantStatus = (tenantId: string) => {
+    setClientTenants(prev =>
+      prev.map(t => {
+        if (t.id === tenantId) {
+          const newStatus = t.status === 'suspended' ? 'active' : 'suspended';
+          return { ...t, status: newStatus };
+        }
+        return t;
+      })
+    );
+  };
+
+  const changeTenantPlan = (tenantId: string, newPlan: 'Starter' | 'Pro OS' | 'Scale Enterprise') => {
+    const planPrices = {
+      'Starter': 3499,
+      'Pro OS': 8999,
+      'Scale Enterprise': 19999
+    };
+    setClientTenants(prev =>
+      prev.map(t => {
+        if (t.id === tenantId) {
+          return { ...t, plan: newPlan, mrr: planPrices[newPlan] };
+        }
+        return t;
+      })
+    );
+  };
+
+  const onboardClientTenant = (newTenant: ClientCompanyTenant) => {
+    setClientTenants(prev => [newTenant, ...prev]);
+  };
 
   // Auth Action: Sign In (Admin or Customer)
   const login = (email: string, password?: string, userType: 'admin' | 'customer' = 'customer') => {
@@ -296,7 +337,11 @@ export function useFounderStore() {
     addIntegration,
     disconnectApp,
     unreadNotifications,
-    setUnreadNotifications
+    setUnreadNotifications,
+    clientTenants,
+    toggleTenantStatus,
+    changeTenantPlan,
+    onboardClientTenant
   };
 }
 

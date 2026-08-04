@@ -32,7 +32,13 @@ import { useFounderStore } from '@/hooks/useFounderStore';
 
 export default function AdminSuperPortalPage() {
   const router = useRouter();
-  const { userProfile } = useFounderStore();
+  const { 
+    userProfile, 
+    clientTenants, 
+    toggleTenantStatus, 
+    changeTenantPlan, 
+    onboardClientTenant 
+  } = useFounderStore();
 
   useEffect(() => {
     if (userProfile?.userType !== 'admin') {
@@ -40,7 +46,6 @@ export default function AdminSuperPortalPage() {
     }
   }, [userProfile, router]);
 
-  const [tenants, setTenants] = useState<ClientCompanyTenant[]>(mockClientTenants);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'suspended' | 'trial'>('all');
   
@@ -52,46 +57,18 @@ export default function AdminSuperPortalPage() {
   const [newFounderEmail, setNewFounderEmail] = useState('');
   const [newPlan, setNewPlan] = useState<'Starter' | 'Pro OS' | 'Scale Enterprise'>('Pro OS');
 
-  const totalSaaSMrr = tenants.reduce((acc, t) => acc + (t.status !== 'suspended' ? t.mrr : 0), 0);
+  const totalSaaSMrr = clientTenants.reduce((acc, t) => acc + (t.status !== 'suspended' ? t.mrr : 0), 0);
   const totalSaaSArr = totalSaaSMrr * 12;
-  const activeTenantsCount = tenants.filter(t => t.status === 'active').length;
-  const totalUsersCount = tenants.reduce((acc, t) => acc + t.userCount, 0);
+  const activeTenantsCount = clientTenants.filter(t => t.status === 'active').length;
+  const totalUsersCount = clientTenants.reduce((acc, t) => acc + t.userCount, 0);
 
-  const filteredTenants = tenants.filter(t => {
+  const filteredTenants = clientTenants.filter(t => {
     const matchesStatus = statusFilter === 'all' || t.status === statusFilter;
     const matchesSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           t.founderName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           t.domain.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesStatus && matchesSearch;
   });
-
-  const toggleTenantStatus = (tenantId: string) => {
-    setTenants(prev =>
-      prev.map(t => {
-        if (t.id === tenantId) {
-          const newStatus = t.status === 'suspended' ? 'active' : 'suspended';
-          return { ...t, status: newStatus };
-        }
-        return t;
-      })
-    );
-  };
-
-  const changeTenantPlan = (tenantId: string, newPlan: 'Starter' | 'Pro OS' | 'Scale Enterprise') => {
-    const planPrices = {
-      'Starter': 3499,
-      'Pro OS': 8999,
-      'Scale Enterprise': 19999
-    };
-    setTenants(prev =>
-      prev.map(t => {
-        if (t.id === tenantId) {
-          return { ...t, plan: newPlan, mrr: planPrices[newPlan] };
-        }
-        return t;
-      })
-    );
-  };
 
   const handleOnboardNewCompany = (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,7 +95,7 @@ export default function AdminSuperPortalPage() {
       createdAt: new Date().toISOString().split('T')[0]
     };
 
-    setTenants(prev => [newTenant, ...prev]);
+    onboardClientTenant(newTenant);
     setShowOnboardModal(false);
 
     // Reset Form
@@ -188,7 +165,7 @@ export default function AdminSuperPortalPage() {
               <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Client Companies</span>
               <div className="flex items-baseline justify-between">
                 <span className="text-2xl font-extrabold text-white font-mono">{activeTenantsCount} Active</span>
-                <span className="text-xs text-slate-400 font-mono">of {tenants.length} Total</span>
+                <span className="text-xs text-slate-400 font-mono">of {clientTenants.length} Total</span>
               </div>
               <p className="text-[11px] text-slate-400">Companies onboarded on SaaS platform</p>
             </div>
