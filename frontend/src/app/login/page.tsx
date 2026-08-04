@@ -325,50 +325,17 @@ export default function LoginPage() {
         >
           <div className="p-7 sm:p-9 rounded-3xl bg-white/95 border border-slate-200 shadow-2xl backdrop-blur-2xl space-y-6 relative selection:bg-blue-600 selection:text-white">
             
-            {/* ROLE TAB SWITCHER (Customer / Founder vs SaaS Creator) */}
-            <div className="flex rounded-2xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold shadow-inner">
-              <button
-                type="button"
-                onClick={() => setUserRoleTab('customer')}
-                className={`flex-1 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-                  userRoleTab === 'customer'
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <User className="w-3.5 h-3.5" />
-                <span>Customer / Founder</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setUserRoleTab('admin')}
-                className={`flex-1 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-                  userRoleTab === 'admin'
-                    ? 'bg-gradient-to-r from-purple-600 to-slate-900 text-white shadow-md'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
-                <span>SaaS Creator</span>
-              </button>
-            </div>
-
             {/* Header */}
             <div className="text-center space-y-2">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {userRoleTab === 'admin' 
-                  ? 'SaaS Creator Portal' 
-                  : (currentStep === 'consumer_apps' 
-                      ? 'Authenticate Consumer Apps' 
-                      : authMode === 'signup' 
-                        ? 'Create Founder Workspace' 
-                        : 'Welcome Back')}
+                {currentStep === 'consumer_apps' 
+                  ? 'Authenticate Consumer Apps' 
+                  : authMode === 'signup' 
+                    ? 'Create Founder Workspace' 
+                    : 'Welcome Back'}
               </h2>
               <p className="text-xs text-slate-600 font-medium">
-                {userRoleTab === 'admin'
-                  ? 'Sign in as SaaS platform creator to manage client companies.'
-                  : 'Sign in to continue to your AI founder workspace.'}
+                Sign in to your company workspace to connect apps, track telemetry, and query AI.
               </p>
             </div>
 

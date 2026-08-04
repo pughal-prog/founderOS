@@ -21,8 +21,11 @@ import {
   ShieldCheck
 } from 'lucide-react';
 
+import { useFounderStore } from '@/hooks/useFounderStore';
+
 export default function Sidebar() {
   const pathname = usePathname();
+  const { userProfile } = useFounderStore();
   const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
   const [activeWorkspace, setActiveWorkspace] = useState('FounderOS HQ');
 
@@ -32,13 +35,17 @@ export default function Sidebar() {
     { name: 'CloudScale Inc.', apps: '6 Apps Synced', mrr: '$120,000' },
   ];
 
-  const mainNav = [
+  const allMainNav = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'AI Chat', path: '/chat', icon: MessageSquareText, badge: 'Core AI' },
     { name: 'Connect Apps', path: '/connect-apps', icon: AppWindow, badge: '8 Synced' },
-    { name: 'SaaS Super Admin', path: '/admin', icon: ShieldCheck, badge: 'SaaS Admin' },
+    ...(userProfile?.userType === 'admin'
+      ? [{ name: 'SaaS Super Admin', path: '/admin', icon: ShieldCheck, badge: 'SaaS Admin' }]
+      : []),
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
+
+  const mainNav = allMainNav;
 
   const subNav = [
     { name: 'Customers & Deals', path: '/dashboard#customers', icon: Users },

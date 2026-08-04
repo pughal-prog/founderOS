@@ -26,7 +26,20 @@ import {
   Globe
 } from 'lucide-react';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useFounderStore } from '@/hooks/useFounderStore';
+
 export default function AdminSuperPortalPage() {
+  const router = useRouter();
+  const { userProfile } = useFounderStore();
+
+  useEffect(() => {
+    if (userProfile?.userType !== 'admin') {
+      router.push('/dashboard');
+    }
+  }, [userProfile, router]);
+
   const [tenants, setTenants] = useState<ClientCompanyTenant[]>(mockClientTenants);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'suspended' | 'trial'>('all');
