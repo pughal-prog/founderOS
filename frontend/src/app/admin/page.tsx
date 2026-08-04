@@ -33,6 +33,7 @@ import { useFounderStore } from '@/hooks/useFounderStore';
 export default function AdminSuperPortalPage() {
   const router = useRouter();
   const { 
+    isHydrated,
     userProfile, 
     clientTenants, 
     toggleTenantStatus, 
@@ -41,10 +42,12 @@ export default function AdminSuperPortalPage() {
   } = useFounderStore();
 
   useEffect(() => {
-    if (userProfile?.userType !== 'admin') {
+    if (!isHydrated) return;
+    const isAdmin = userProfile?.userType === 'admin' || (userProfile?.email && userProfile.email.toLowerCase().includes('admin'));
+    if (!isAdmin) {
       router.push('/dashboard');
     }
-  }, [userProfile, router]);
+  }, [isHydrated, userProfile, router]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'suspended' | 'trial'>('all');
@@ -104,6 +107,17 @@ export default function AdminSuperPortalPage() {
     setNewFounderName('');
     setNewFounderEmail('');
   };
+
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center font-bold text-sm">
+        <div className="flex items-center gap-3">
+          <span className="w-4 h-4 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+          <span>Verifying SaaS Super Admin Session...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-white flex flex-col selection:bg-purple-600 selection:text-white">

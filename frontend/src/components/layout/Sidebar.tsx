@@ -35,11 +35,13 @@ export default function Sidebar() {
     { name: 'CloudScale Inc.', apps: '6 Apps Synced', mrr: '$120,000' },
   ];
 
+  const isAdmin = userProfile?.userType === 'admin' || (userProfile?.email && userProfile.email.toLowerCase().includes('admin'));
+
   const allMainNav = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'AI Chat', path: '/chat', icon: MessageSquareText, badge: 'Core AI' },
     { name: 'Connect Apps', path: '/connect-apps', icon: AppWindow, badge: '8 Synced' },
-    ...(userProfile?.userType === 'admin'
+    ...(isAdmin
       ? [{ name: 'SaaS Super Admin', path: '/admin', icon: ShieldCheck, badge: 'SaaS Admin' }]
       : []),
     { name: 'Settings', path: '/settings', icon: Settings },

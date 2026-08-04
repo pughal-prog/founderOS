@@ -139,7 +139,7 @@ export default function Navbar() {
         </div>
 
         {/* Role Indicator Badge */}
-        {userProfile?.userType === 'admin' ? (
+        {userProfile?.userType === 'admin' || (userProfile?.email && userProfile.email.toLowerCase().includes('admin')) ? (
           <span className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50 text-purple-900 border border-purple-300 font-extrabold text-[10px] uppercase shadow-sm">
             <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" />
             ADMIN MODE

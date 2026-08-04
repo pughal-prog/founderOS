@@ -135,7 +135,7 @@ export function useFounderStore() {
 
   // Auth Action: Sign In (Admin or Customer)
   const login = (email: string, password?: string, userType: 'admin' | 'customer' = 'customer') => {
-    const isAdmin = userType === 'admin' || email.toLowerCase().includes('admin');
+    const isAdmin = userType === 'admin' || (email && email.toLowerCase().includes('admin'));
     const existingUser: UserProfile = {
       ...userProfile,
       email: email || (isAdmin ? 'admin@founderos.io' : 'alex@founderos.io'),
@@ -146,6 +146,13 @@ export function useFounderStore() {
     };
     setUserProfile(existingUser);
     setIsAuthenticated(true);
+
+    try {
+      localStorage.setItem(STORAGE_KEYS.AUTH, JSON.stringify(true));
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(existingUser));
+    } catch (e) {
+      console.error('Error saving login state synchronously:', e);
+    }
   };
 
   // Auth Action: Create New Workspace
