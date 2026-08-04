@@ -4,23 +4,27 @@ import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Sidebar from '@/components/layout/Sidebar';
 import IntegrationCard from '@/components/ui/IntegrationCard';
-import ActionModal from '@/components/ui/ActionModal';
+import ConsumerAuthModal from '@/components/ui/ConsumerAuthModal';
+import AddCustomAppModal from '@/components/ui/AddCustomAppModal';
 import BrainOverlayWidget from '@/components/BrainOverlayWidget';
 import { useFounderStore } from '@/hooks/useFounderStore';
-import { AppWindow, Database, Sparkles, CheckCircle2, ShieldCheck, Search, Filter } from 'lucide-react';
+import { IntegrationApp } from '@/types';
+import { ShieldCheck, Search, Filter, Key, CheckCircle2, Plus, Sparkles } from 'lucide-react';
 
 export default function ConnectAppsPage() {
   const { integrations, toggleIntegration } = useFounderStore();
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Modal state
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalTitle, setModalTitle] = useState('');
+  // Consumer Auth Modal State
+  const [selectedAuthApp, setSelectedAuthApp] = useState<IntegrationApp | null>(null);
+
+  // Add Custom App Modal State
+  const [addAppModalOpen, setAddAppModalOpen] = useState(false);
 
   const connectedCount = integrations.filter(i => i.connected).length;
 
-  const categories = ['All', 'Communication & Email', 'Revenue & Subscriptions', 'CRM & Pipeline', 'Engineering & Delivery', 'Knowledge & Specs'];
+  const categories = ['All', 'Communication & Email', 'Revenue & Subscriptions', 'CRM & Pipeline', 'Engineering & Delivery', 'Knowledge & Specs', 'Customer Support', 'DevOps & Monitoring', 'Analytics & Telemetry'];
 
   const filteredIntegrations = integrations.filter((app) => {
     const matchesCategory = selectedCategory === 'All' || app.category.toLowerCase().includes(selectedCategory.toLowerCase());
@@ -47,22 +51,35 @@ export default function ConnectAppsPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-panel p-6 rounded-3xl border border-slate-200 bg-white shadow-sm relative overflow-hidden">
             <div className="space-y-1 z-10">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-700">Integrations Ecosystem</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
-                  {connectedCount} of 9 Connected
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-700">Enterprise Integrations Ecosystem</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                  {connectedCount} of {integrations.length} Consumer Apps Authorized
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Connect SaaS Business Tools
+                Authenticate Consumer Applications
               </h1>
               <p className="text-xs sm:text-sm text-slate-600">
-                FounderOS indexes all your tool data without replacing Gmail, Slack, Notion, or Stripe.
+                Authenticate Jira, Gmail, Slack, Stripe, Notion, Salesforce, Zendesk & custom apps using Consumer OAuth 2.0 or BYO enterprise Client ID & Secrets.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-slate-700 font-semibold z-10">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Read-Only API Sync • SOC-2 Compliant</span>
+            <div className="flex items-center gap-3 z-10">
+              <div className="hidden lg:flex items-center gap-2 text-xs text-slate-700 font-semibold">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <span>Consumer OAuth 2.0 Vault</span>
+              </div>
+
+              {/* Add Custom / Catalog Application Button */}
+              <button
+                type="button"
+                onClick={() => setAddAppModalOpen(true)}
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold text-xs shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Application</span>
+              </button>
             </div>
           </div>
 
@@ -101,19 +118,14 @@ export default function ConnectAppsPage() {
 
           </div>
 
-          {/* 9 Integration Cards Grid */}
+          {/* Integration Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredIntegrations.map((app) => (
               <IntegrationCard
                 key={app.id}
                 app={app}
-                onToggle={(id) => {
-                  toggleIntegration(id);
-                  if (!app.connected) {
-                    setModalTitle(`Configure API Sync for ${app.name}`);
-                    setModalOpen(true);
-                  }
-                }}
+                onOpenAuthModal={(selectedApp) => setSelectedAuthApp(selectedApp)}
+                onToggle={(id) => toggleIntegration(id)}
               />
             ))}
           </div>
@@ -121,12 +133,20 @@ export default function ConnectAppsPage() {
         </main>
       </div>
 
-      {/* Action Modal */}
-      <ActionModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={modalTitle}
-        type="view"
+      {/* Add Custom / Preset Application Modal */}
+      <AddCustomAppModal
+        isOpen={addAppModalOpen}
+        onClose={() => setAddAppModalOpen(false)}
+        onAppAdded={(newApp) => {
+          setSelectedAuthApp(newApp);
+        }}
+      />
+
+      {/* Consumer OAuth Authentication Modal */}
+      <ConsumerAuthModal
+        isOpen={Boolean(selectedAuthApp)}
+        onClose={() => setSelectedAuthApp(null)}
+        app={selectedAuthApp}
       />
 
       {/* Floating AI Brain Overlay Widget */}

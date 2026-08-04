@@ -237,47 +237,53 @@ export const mockIntegrations: IntegrationApp[] = [
     iconName: 'Mail',
     connected: true,
     status: 'connected',
-    lastSynced: '2 mins ago'
+    lastSynced: '2 mins ago',
+    authType: 'oauth2',
+    scopes: ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send', 'offline_access'],
+    connectedUser: {
+      name: 'Alex Vance',
+      email: 'alex@founderos.io',
+      role: 'Workspace Administrator'
+    },
+    healthStatus: 'healthy',
+    clientId: '782910482931-google-oauth.apps.googleusercontent.com',
+    redirectUri: 'https://app.founderos.io/api/auth/callback/gmail'
+  },
+  {
+    id: 'app-jira',
+    name: 'Jira Software',
+    category: 'Project Management',
+    description: 'Sync enterprise customer feature tickets, Atlassian projects, and security compliance epics.',
+    iconName: 'Layers',
+    connected: false,
+    status: 'disconnected',
+    lastSynced: 'Never',
+    authType: 'oauth2',
+    siteUrl: 'founderos-tech.atlassian.net',
+    scopes: ['read:jira-work', 'write:jira-work', 'read:jira-user', 'offline_access'],
+    clientId: 'atlassian_consumer_client_9942',
+    healthStatus: 'warning',
+    redirectUri: 'https://app.founderos.io/api/auth/callback/jira'
   },
   {
     id: 'app-slack',
     name: 'Slack',
     category: 'Team Communication',
-    description: 'Index team channels, customer escalation pings, and internal sentiment.',
+    description: 'Index team channels, customer escalation pings, and internal founder sentiment.',
     iconName: 'MessageSquare',
     connected: true,
     status: 'connected',
-    lastSynced: 'Just now'
-  },
-  {
-    id: 'app-notion',
-    name: 'Notion',
-    category: 'Knowledge & Specs',
-    description: 'Index product specs, company wikis, meeting notes, and founder OKRs.',
-    iconName: 'FileText',
-    connected: true,
-    status: 'connected',
-    lastSynced: '15 mins ago'
-  },
-  {
-    id: 'app-calendar',
-    name: 'Google Calendar',
-    category: 'Meetings & Schedule',
-    description: 'Sync founder calendar events, investor demos, and customer calls.',
-    iconName: 'Calendar',
-    connected: true,
-    status: 'connected',
-    lastSynced: 'Just now'
-  },
-  {
-    id: 'app-hubspot',
-    name: 'HubSpot',
-    category: 'CRM & Pipeline',
-    description: 'Track deal stages, contact timeline history, and lead scoring.',
-    iconName: 'Users',
-    connected: true,
-    status: 'connected',
-    lastSynced: '5 mins ago'
+    lastSynced: 'Just now',
+    authType: 'oauth2',
+    scopes: ['channels:read', 'chat:write', 'users:read', 'team:read'],
+    connectedUser: {
+      name: 'Alex Vance',
+      email: 'alex@founderos.io',
+      role: 'Workspace Owner'
+    },
+    healthStatus: 'healthy',
+    clientId: '184920491.4920104-slack-client',
+    redirectUri: 'https://app.founderos.io/api/auth/callback/slack'
   },
   {
     id: 'app-stripe',
@@ -287,7 +293,16 @@ export const mockIntegrations: IntegrationApp[] = [
     iconName: 'CreditCard',
     connected: true,
     status: 'connected',
-    lastSynced: 'Just now'
+    lastSynced: 'Just now',
+    authType: 'api_token',
+    apiKey: 'rk_live_51Nx92••••••••••••••••••••',
+    scopes: ['read_only', 'invoices:write', 'customers:read'],
+    connectedUser: {
+      name: 'FounderOS Primary Account',
+      email: 'billing@founderos.io',
+      role: 'Finance Admin'
+    },
+    healthStatus: 'healthy'
   },
   {
     id: 'app-github',
@@ -297,7 +312,71 @@ export const mockIntegrations: IntegrationApp[] = [
     iconName: 'Code',
     connected: true,
     status: 'connected',
-    lastSynced: '30 mins ago'
+    lastSynced: '30 mins ago',
+    authType: 'oauth2',
+    scopes: ['repo', 'read:org', 'user:email', 'read:user'],
+    connectedUser: {
+      name: 'alexvance-dev',
+      email: 'alex.vance@github.org',
+      role: 'Org Owner'
+    },
+    healthStatus: 'healthy',
+    clientId: 'Iv1.82910482901abcf',
+    redirectUri: 'https://app.founderos.io/api/auth/callback/github'
+  },
+  {
+    id: 'app-notion',
+    name: 'Notion',
+    category: 'Knowledge & Specs',
+    description: 'Index product specs, company wikis, meeting notes, and founder OKRs.',
+    iconName: 'FileText',
+    connected: true,
+    status: 'connected',
+    lastSynced: '15 mins ago',
+    authType: 'api_token',
+    apiKey: 'ntn_secret_8291048921048912',
+    scopes: ['read_content', 'update_content', 'insert_content'],
+    connectedUser: {
+      name: 'FounderOS Workspace',
+      email: 'docs@founderos.io'
+    },
+    healthStatus: 'healthy'
+  },
+  {
+    id: 'app-calendar',
+    name: 'Google Calendar',
+    category: 'Meetings & Schedule',
+    description: 'Sync founder calendar events, investor demos, and customer calls.',
+    iconName: 'Calendar',
+    connected: true,
+    status: 'connected',
+    lastSynced: 'Just now',
+    authType: 'oauth2',
+    scopes: ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/calendar.events'],
+    connectedUser: {
+      name: 'Alex Vance',
+      email: 'alex@founderos.io'
+    },
+    healthStatus: 'healthy',
+    clientId: '782910482931-google-oauth.apps.googleusercontent.com'
+  },
+  {
+    id: 'app-hubspot',
+    name: 'HubSpot',
+    category: 'CRM & Pipeline',
+    description: 'Track deal stages, contact timeline history, and lead scoring.',
+    iconName: 'Users',
+    connected: true,
+    status: 'connected',
+    lastSynced: '5 mins ago',
+    authType: 'oauth2',
+    scopes: ['crm.objects.contacts.read', 'crm.objects.deals.read', 'crm.schemas.contacts.read'],
+    connectedUser: {
+      name: 'FounderOS Sales Hub',
+      email: 'sales@founderos.io'
+    },
+    healthStatus: 'healthy',
+    clientId: 'hubspot-consumer-app-1849'
   },
   {
     id: 'app-linear',
@@ -307,16 +386,14 @@ export const mockIntegrations: IntegrationApp[] = [
     iconName: 'CheckSquare',
     connected: true,
     status: 'connected',
-    lastSynced: '10 mins ago'
-  },
-  {
-    id: 'app-jira',
-    name: 'Jira',
-    category: 'Project Management',
-    description: 'Sync enterprise customer feature tickets and security compliance epics.',
-    iconName: 'Layers',
-    connected: false,
-    status: 'disconnected',
-    lastSynced: 'Never'
+    lastSynced: '10 mins ago',
+    authType: 'oauth2',
+    scopes: ['read', 'write', 'issues:create'],
+    connectedUser: {
+      name: 'Alex Vance',
+      email: 'alex@founderos.io'
+    },
+    healthStatus: 'healthy',
+    clientId: 'linear_app_id_9921'
   }
 ];

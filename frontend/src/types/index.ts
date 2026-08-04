@@ -69,6 +69,13 @@ export interface Email {
   daysUnreplied?: number;
 }
 
+export interface ConnectedUser {
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  role?: string;
+}
+
 export interface IntegrationApp {
   id: string;
   name: string;
@@ -78,6 +85,38 @@ export interface IntegrationApp {
   connected: boolean;
   status: 'connected' | 'disconnected' | 'syncing';
   lastSynced: string;
+  authToken?: string;
+  apiKey?: string;
+  authType?: 'oauth2' | 'api_token' | 'personal_token';
+  siteUrl?: string;
+  clientId?: string;
+  clientSecret?: string;
+  scopes?: string[];
+  connectedUser?: ConnectedUser;
+  expiresAt?: string;
+  healthStatus?: 'healthy' | 'warning' | 'expired';
+  redirectUri?: string;
+}
+
+export interface Workspace {
+  id: string;
+  name: string;
+  companyName: string;
+  domain: string;
+  role: string;
+  createdAt: string;
+  connectedAppsCount: number;
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  company: string;
+  currentWorkspaceId: string;
+  openAiApiKey?: string;
+  supabaseUrl?: string;
 }
 
 export interface ChatMessage {
@@ -92,3 +131,4 @@ export interface ChatMessage {
   };
   dataPayload?: any;
 }
+

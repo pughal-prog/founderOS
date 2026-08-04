@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Send, CheckCircle2, Calendar, Mail, CreditCard, Sparkles } from 'lucide-react';
+import { X, Send, CheckCircle2, Calendar, Mail, CreditCard, Sparkles, Key, ShieldCheck } from 'lucide-react';
+import { useFounderStore } from '@/hooks/useFounderStore';
 
 interface ActionModalProps {
   isOpen: boolean;
@@ -12,9 +13,12 @@ interface ActionModalProps {
 }
 
 export default function ActionModal({ isOpen, onClose, title, type, initialData }: ActionModalProps) {
+  const { connectAppWithToken } = useFounderStore();
   const [emailText, setEmailText] = useState(
     initialData?.notes || 'Hi Sarah,\n\nFollowing up on our recent security questionnaire. Please let me know if you need any additional compliance docs.\n\nBest,\nAlex Vance'
   );
+  const [apiKey, setApiKey] = useState(initialData?.apiKey || '');
+  const [authToken, setAuthToken] = useState(initialData?.authToken || '');
   const [isSending, setIsSending] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -23,6 +27,9 @@ export default function ActionModal({ isOpen, onClose, title, type, initialData 
   const handleExecute = () => {
     setIsSending(true);
     setTimeout(() => {
+      if (type === 'connect' && initialData?.appId) {
+        connectAppWithToken(initialData.appId, authToken || `oauth_token_${Date.now()}`, apiKey);
+      }
       setIsSending(false);
       setSuccess(true);
       setTimeout(() => {
@@ -61,6 +68,45 @@ export default function ActionModal({ isOpen, onClose, title, type, initialData 
           </div>
         ) : (
           <>
+            {type === 'connect' && (
+              <div className="space-y-4 text-xs">
+                <div className="p-3.5 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 space-y-1.5">
+                  <div className="flex items-center gap-2 text-cyan-400 font-bold">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>OAuth 2.0 & API Token Setup</span>
+                  </div>
+                  <p className="text-slate-300 text-[11px]">
+                    Configure read-only API sync credentials for {initialData?.appName || 'this integration'}.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-semibold mb-1 block">API Key / Access Secret</label>
+                  <div className="relative">
+                    <Key className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="password"
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      placeholder="sk_live_••••••••••••••••••••••••"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-9 pr-3 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-semibold mb-1 block">OAuth Token (Optional / Auto-Generated)</label>
+                  <input
+                    type="text"
+                    value={authToken}
+                    onChange={(e) => setAuthToken(e.target.value)}
+                    placeholder="bearer_token_••••••••••••"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white font-mono text-[11px]"
+                  />
+                </div>
+              </div>
+            )}
+
             {type === 'email' && (
               <div className="space-y-3 text-xs">
                 <div>
@@ -168,3 +214,4 @@ export default function ActionModal({ isOpen, onClose, title, type, initialData 
     </div>
   );
 }
+

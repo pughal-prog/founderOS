@@ -6,6 +6,8 @@
     "dev": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" concurrently \"npm --prefix frontend run dev\" \"npm --prefix backend run dev\"",
     "dev:frontend": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" npm --prefix frontend run dev",
     "dev:backend": "npm --prefix backend run dev",
+    "db:setup": "npm --prefix backend run db:setup",
+    "db:verify": "npm --prefix backend run db:verify",
     "build": "npm --prefix frontend run build"
   },
   "devDependencies": {

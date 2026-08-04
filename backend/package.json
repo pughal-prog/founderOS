@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "npx ts-node src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "db:setup": "npx ts-node src/scripts/setup-db-local.ts",
+    "db:verify": "npx ts-node src/scripts/verify-all.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
