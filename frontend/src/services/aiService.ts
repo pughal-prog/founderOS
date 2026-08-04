@@ -70,13 +70,13 @@ export async function processFounderQuery(queryText: string): Promise<ChatMessag
     const totalRiskMrr = riskCustomers.reduce((acc, curr) => acc + curr.mrr, 0);
 
     const formattedList = riskCustomers
-      .map(c => `• **${c.company}** ($${c.mrr.toLocaleString()}/mo MRR): ${c.notes}`)
+      .map(c => `• **${c.company}** (₹${c.mrr.toLocaleString()}/mo MRR): ${c.notes}`)
       .join('\n');
 
     return {
       id: Date.now().toString(),
       sender: 'ai',
-      text: `Synthesizing Stripe & HubSpot CRM telemetry: You currently have **${riskCustomers.length} high-risk deals** representing **$${totalRiskMrr.toLocaleString()}/mo MRR** at churn risk:\n\n${formattedList}`,
+      text: `Synthesizing Stripe & HubSpot CRM telemetry: You currently have **${riskCustomers.length} high-risk deals** representing **₹${totalRiskMrr.toLocaleString()}/mo MRR** at churn risk:\n\n${formattedList}`,
       timestamp,
       suggestedAction: {
         label: 'Create Retention Task in Linear',
@@ -96,13 +96,13 @@ export async function processFounderQuery(queryText: string): Promise<ChatMessag
     const totalOverdue = overdue.reduce((acc, curr) => acc + curr.amount, 0);
 
     const formattedList = overdue
-      .map(i => `• **${i.invoiceNumber}** - ${i.customerName}: **$${i.amount.toLocaleString()}** (${i.daysOverdue} days overdue)`)
+      .map(i => `• **${i.invoiceNumber}** - ${i.customerName}: **₹${i.amount.toLocaleString()}** (${i.daysOverdue} days overdue)`)
       .join('\n');
 
     return {
       id: Date.now().toString(),
       sender: 'ai',
-      text: `Found **${overdue.length} overdue invoices** in Stripe totaling **$${totalOverdue.toLocaleString()}**:\n\n${formattedList}`,
+      text: `Found **${overdue.length} overdue invoices** in Stripe totaling **₹${totalOverdue.toLocaleString()}**:\n\n${formattedList}`,
       timestamp,
       suggestedAction: {
         label: 'Send Automated Invoice Reminder via Stripe',
@@ -123,7 +123,7 @@ export async function processFounderQuery(queryText: string): Promise<ChatMessag
   return {
     id: Date.now().toString(),
     sender: 'ai',
-    text: `Synthesized answer across Gmail, Slack, Stripe, HubSpot, & Notion:\n\nYour current MRR is **$${currentMrr.toLocaleString()}** across **${activeCust} active enterprise accounts**. All systems are operating smoothly with 0 open API outages.`,
+    text: `Synthesized answer across Gmail, Slack, Stripe, HubSpot, & Notion:\n\nYour current MRR is **₹${currentMrr.toLocaleString()}** across **${activeCust} active enterprise accounts**. All systems are operating smoothly with 0 open API outages.`,
     timestamp,
     suggestedAction: {
       label: 'View Detailed Revenue Analytics in Dashboard',

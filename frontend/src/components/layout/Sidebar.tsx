@@ -17,7 +17,8 @@ import {
   Globe,
   ChevronDown,
   Building,
-  CheckCircle2
+  CheckCircle2,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -35,6 +36,7 @@ export default function Sidebar() {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'AI Chat', path: '/chat', icon: MessageSquareText, badge: 'Core AI' },
     { name: 'Connect Apps', path: '/connect-apps', icon: AppWindow, badge: '8 Synced' },
+    { name: 'SaaS Super Admin', path: '/admin', icon: ShieldCheck, badge: 'SaaS Admin' },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
 

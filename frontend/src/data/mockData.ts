@@ -52,7 +52,7 @@ export const mockCustomers: Customer[] = [
     mrr: 0,
     lastContactDaysAgo: 3,
     replied: false,
-    notes: 'Evaluating $24k ARR proposal.'
+    notes: 'Evaluating ₹20L ARR proposal.'
   },
   {
     id: 'c5',
@@ -395,5 +395,92 @@ export const mockIntegrations: IntegrationApp[] = [
     },
     healthStatus: 'healthy',
     clientId: 'linear_app_id_9921'
+  }
+];
+
+export const mockClientTenants = [
+  {
+    id: 'tenant-1',
+    name: 'Acme Inc.',
+    domain: 'acme.com',
+    founderName: 'Sarah Jenkins',
+    founderEmail: 'sarah@acme.com',
+    plan: 'Scale Enterprise' as const,
+    status: 'active' as const,
+    mrr: 19999,
+    userCount: 42,
+    connectedAppsCount: 7,
+    apiUsagePercent: 68,
+    createdAt: '2026-01-15'
+  },
+  {
+    id: 'tenant-2',
+    name: 'Starlight Labs',
+    domain: 'starlight.io',
+    founderName: 'Michael Chen',
+    founderEmail: 'mchen@starlight.io',
+    plan: 'Pro OS' as const,
+    status: 'active' as const,
+    mrr: 8999,
+    userCount: 18,
+    connectedAppsCount: 9,
+    apiUsagePercent: 44,
+    createdAt: '2026-02-01'
+  },
+  {
+    id: 'tenant-3',
+    name: 'Apex Cloud',
+    domain: 'apexcloud.net',
+    founderName: 'Elena Rostova',
+    founderEmail: 'elena@apexcloud.net',
+    plan: 'Starter' as const,
+    status: 'trial' as const,
+    mrr: 3499,
+    userCount: 5,
+    connectedAppsCount: 4,
+    apiUsagePercent: 82,
+    createdAt: '2026-03-10'
+  },
+  {
+    id: 'tenant-4',
+    name: 'Nexus Dynamics',
+    domain: 'nexus.com',
+    founderName: 'David Vance',
+    founderEmail: 'dvance@nexus.com',
+    plan: 'Scale Enterprise' as const,
+    status: 'active' as const,
+    mrr: 19999,
+    userCount: 64,
+    connectedAppsCount: 8,
+    apiUsagePercent: 91,
+    createdAt: '2025-11-20'
+  },
+  {
+    id: 'tenant-5',
+    name: 'CloudScale AI',
+    domain: 'cloudscale.ai',
+    founderName: 'Marcus Vance',
+    founderEmail: 'marcus@cloudscale.ai',
+    plan: 'Pro OS' as const,
+    status: 'active' as const,
+    mrr: 8999,
+    userCount: 22,
+    connectedAppsCount: 6,
+    apiUsagePercent: 55,
+    createdAt: '2026-02-18'
+  },
+  {
+    id: 'tenant-6',
+    name: 'DataPulse Analytics',
+    domain: 'datapulse.io',
+    founderName: 'Sophia Martinez',
+    founderEmail: 'sophia@datapulse.io',
+    plan: 'Pro OS' as const,
+    status: 'suspended' as const,
+    mrr: 8999,
+    userCount: 12,
+    connectedAppsCount: 3,
+    apiUsagePercent: 12,
+    createdAt: '2026-01-05'
   }
 ];

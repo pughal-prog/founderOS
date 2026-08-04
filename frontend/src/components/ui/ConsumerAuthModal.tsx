@@ -117,6 +117,14 @@ export default function ConsumerAuthModal({ isOpen, onClose, app }: ConsumerAuth
         authToken: realToken,
         siteUrl: siteUrl || result.profile.teamOrCompany
       });
+
+      if (app.id === 'app-gmail') {
+        authenticateConsumerApp('app-calendar', {
+          userName: result.profile.name,
+          userEmail: result.profile.email,
+          authToken: realToken
+        });
+      }
     } else {
       setRealAuthError(result.error || `Failed to verify credentials for ${app.name}.`);
     }
@@ -137,6 +145,11 @@ export default function ConsumerAuthModal({ isOpen, onClose, app }: ConsumerAuth
             clientId: clientId || `${app.name.toLowerCase()}_consumer_id_${Date.now().toString().slice(-4)}`,
             authToken: realToken || `oauth2_access_tok_${Date.now()}`
           });
+          if (app.id === 'app-gmail') {
+            authenticateConsumerApp('app-calendar', {
+              authToken: realToken || `oauth2_access_tok_${Date.now()}`
+            });
+          }
           setIsAuthenticating(false);
           setAuthStep(4); // Success!
           setTimeout(() => {

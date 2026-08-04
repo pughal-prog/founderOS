@@ -115,6 +115,7 @@ export interface UserProfile {
   role: string;
   company: string;
   currentWorkspaceId: string;
+  userType?: 'admin' | 'customer';
   openAiApiKey?: string;
   supabaseUrl?: string;
 }
@@ -130,5 +131,20 @@ export interface ChatMessage {
     targetId?: string;
   };
   dataPayload?: any;
+}
+
+export interface ClientCompanyTenant {
+  id: string;
+  name: string;
+  domain: string;
+  founderName: string;
+  founderEmail: string;
+  plan: 'Starter' | 'Pro OS' | 'Scale Enterprise';
+  status: 'active' | 'suspended' | 'trial';
+  mrr: number;
+  userCount: number;
+  connectedAppsCount: number;
+  apiUsagePercent: number;
+  createdAt: string;
 }
 

@@ -92,12 +92,16 @@ export function useFounderStore() {
 
   const currentWorkspace = workspaces.find(w => w.id === currentWorkspaceId) || workspaces[0] || defaultWorkspaces[0];
 
-  // Auth Action: Sign In
-  const login = (email: string, password?: string) => {
-    const existingUser = {
+  // Auth Action: Sign In (Admin or Customer)
+  const login = (email: string, password?: string, userType: 'admin' | 'customer' = 'customer') => {
+    const isAdmin = userType === 'admin' || email.toLowerCase().includes('admin');
+    const existingUser: UserProfile = {
       ...userProfile,
-      email: email || userProfile.email,
-      name: email.split('@')[0].replace('.', ' ').toUpperCase() || userProfile.name
+      email: email || (isAdmin ? 'admin@founderos.io' : 'alex@founderos.io'),
+      name: isAdmin ? 'Platform Administrator' : (email ? email.split('@')[0].replace('.', ' ').toUpperCase() : 'Alex Vance'),
+      role: isAdmin ? 'System Admin & Security Manager' : 'Founder & CEO',
+      company: isAdmin ? 'FounderOS Infrastructure' : 'Acme Inc.',
+      userType: isAdmin ? 'admin' : 'customer'
     };
     setUserProfile(existingUser);
     setIsAuthenticated(true);

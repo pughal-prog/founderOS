@@ -52,7 +52,7 @@ export default function LandingPage() {
       if (q.toLowerCase().includes('reply')) {
         setSandboxResult('Acme Inc. (Sarah Jenkins): No reply for 9 days after security audit doc sent. Suggested Action: Draft follow-up email.');
       } else if (q.toLowerCase().includes('arr') || q.toLowerCase().includes('revenue')) {
-        setSandboxResult('Real-time Stripe MRR is $82,500 (+12.1% MoM). 18 enterprise upgrades contributed $42k in expansion ARR.');
+        setSandboxResult('Real-time Stripe MRR is ₹82,500 (+12.1% MoM). 18 enterprise upgrades contributed ₹42k in expansion ARR.');
       } else if (q.toLowerCase().includes('meeting') || q.toLowerCase().includes('calendar')) {
         setSandboxResult('3 Meetings Today: Sequoia Capital Investor Call @ 10:00 AM, Acme Security Review @ 2:00 PM.');
       } else {
@@ -67,19 +67,19 @@ export default function LandingPage() {
       quote: "FounderOS completely replaced my Sunday evening manual reporting routine. I just ask 'What deals slip this week?' and get instant cross-app answers.",
       name: "Marcus Vance",
       title: "CEO & Co-founder, CloudScale",
-      mrr: "$140k MRR"
+      mrr: "₹1.4L MRR"
     },
     {
       quote: "Connecting Stripe, HubSpot, and Notion in 2 clicks allowed our board updates to run on autopilot.",
       name: "Sophia Martinez",
       title: "Founder, DataPulse AI",
-      mrr: "$85k MRR"
+      mrr: "₹85k MRR"
     },
     {
-      quote: "The unreplied email detector alone saved us from losing a $45k ARR deal with an enterprise prospect.",
+      quote: "The unreplied email detector alone saved us from losing a ₹45k ARR deal with an enterprise prospect.",
       name: "David Sterling",
       title: "Head of Growth, DevSync",
-      mrr: "$220k MRR"
+      mrr: "₹2.2L MRR"
     }
   ];
 
@@ -271,7 +271,7 @@ export default function LandingPage() {
               </div>
               <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
                 <span className="text-[11px] font-semibold text-slate-500 block">Est. Value Saved / Month</span>
-                <span className="text-3xl font-extrabold text-emerald-600 mt-1 block">${dollarsSavedPerMonth.toLocaleString()}</span>
+                <span className="text-3xl font-extrabold text-emerald-600 mt-1 block">₹{dollarsSavedPerMonth.toLocaleString()}</span>
               </div>
             </div>
             <Link
@@ -319,9 +319,9 @@ export default function LandingPage() {
             <div className="space-y-4">
               <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">Starter Founder</span>
               <div className="text-4xl font-extrabold text-slate-900">
-                ${billingPeriod === 'annual' ? '39' : '49'} <span className="text-xs text-slate-500 font-normal">/ mo</span>
+                ₹{billingPeriod === 'annual' ? '2,999' : '3,499'} <span className="text-xs text-slate-500 font-normal">/ mo</span>
               </div>
-              <p className="text-xs text-slate-600">For early-stage founders up to $20k MRR.</p>
+              <p className="text-xs text-slate-600">For early-stage founders up to ₹20L MRR.</p>
               <ul className="space-y-2 text-xs text-slate-700">
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-blue-600" /> Up to 5 SaaS Connectors</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-blue-600" /> 1,000 AI Queries / Mo</li>
@@ -336,7 +336,7 @@ export default function LandingPage() {
             <div className="space-y-4">
               <span className="text-xs font-bold text-blue-700 uppercase tracking-wider">Pro OS</span>
               <div className="text-4xl font-extrabold text-slate-900">
-                ${billingPeriod === 'annual' ? '119' : '149'} <span className="text-xs text-slate-500 font-normal">/ mo</span>
+                ₹{billingPeriod === 'annual' ? '8,999' : '9,999'} <span className="text-xs text-slate-500 font-normal">/ mo</span>
               </div>
               <p className="text-xs text-slate-600">Full AI Operating System for scaling founders.</p>
               <ul className="space-y-2 text-xs text-slate-700">
@@ -353,7 +353,7 @@ export default function LandingPage() {
           <div className="glass-panel p-8 rounded-3xl border border-slate-200 flex flex-col justify-between space-y-6 bg-white shadow-sm">
             <div className="space-y-4">
               <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Scale Enterprise</span>
-              <div className="text-4xl font-extrabold text-slate-900">$249 <span className="text-xs text-slate-500 font-normal">/ mo</span></div>
+              <div className="text-4xl font-extrabold text-slate-900">₹19,999 <span className="text-xs text-slate-500 font-normal">/ mo</span></div>
               <p className="text-xs text-slate-600">Custom data retention and multi-founder seats.</p>
               <ul className="space-y-2 text-xs text-slate-700">
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-600" /> Self-Hosted Supabase DB</li>

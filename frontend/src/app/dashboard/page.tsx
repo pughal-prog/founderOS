@@ -313,7 +313,7 @@ export default function DashboardPage() {
                         <p className="text-[11px] text-slate-600 mt-0.5">{c.notes}</p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-mono text-blue-700 font-bold">${c.mrr}/mo</span>
+                        <span className="text-xs font-mono text-blue-700 font-bold">₹{c.mrr}/mo</span>
                         <button
                           onClick={() => openModal(`Contact ${c.company}`, 'email', c)}
                           className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 text-[11px] font-semibold transition-colors shadow-sm"

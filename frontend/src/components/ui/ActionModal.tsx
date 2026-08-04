@@ -142,7 +142,7 @@ export default function ActionModal({ isOpen, onClose, title, type, initialData 
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
                   <div className="flex justify-between font-bold text-white">
                     <span>Invoice INV-2026-001 (Apex Cloud)</span>
-                    <span className="text-red-400">$5,600 Overdue</span>
+                    <span className="text-red-400">₹5,600 Overdue</span>
                   </div>
                   <p className="text-slate-400">14 days past due date. Payment failed twice in Stripe billing portal.</p>
                 </div>
@@ -161,7 +161,7 @@ export default function ActionModal({ isOpen, onClose, title, type, initialData 
                 </div>
                 <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 space-y-1">
                   <span className="font-bold text-white block">AI Prep Briefing:</span>
-                  <p>Q3 ARR is +18.4% ahead of targets. Enterprise expansion MRR generated $42k in new recurring revenue.</p>
+                  <p>Q3 ARR is +18.4% ahead of targets. Enterprise expansion MRR generated ₹42k in new recurring revenue.</p>
                 </div>
               </div>
             )}
@@ -172,7 +172,7 @@ export default function ActionModal({ isOpen, onClose, title, type, initialData 
                 <div className="grid grid-cols-2 gap-3 font-mono">
                   <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                     <span className="text-slate-400 block text-[10px]">Stripe ARR</span>
-                    <span className="text-cyan-400 font-bold text-sm">$3,420,000</span>
+                    <span className="text-cyan-400 font-bold text-sm">₹34,20,000</span>
                   </div>
                   <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                     <span className="text-slate-400 block text-[10px]">Net Churn</span>
