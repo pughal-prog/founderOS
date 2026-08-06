@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { isDatabaseConnected } from '@/lib/supabase';
 import { useFounderStore } from '@/hooks/useFounderStore';
+import FounderOSLogo from '@/components/ui/FounderOSLogo';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -60,15 +61,7 @@ export default function AdminLoginPage() {
       {/* Top Header Bar */}
       <header className="p-6 max-w-7xl mx-auto w-full flex items-center justify-between z-10">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-blue-600 p-0.5 shadow-lg shadow-purple-500/20 group-hover:scale-105 transition-transform">
-            <div className="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-white" />
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold text-base text-slate-900 tracking-tight">FOUNDER OS</span>
-            <span className="text-[10px] font-mono text-purple-700 font-bold uppercase tracking-widest">SaaS Creator Portal</span>
-          </div>
+          <FounderOSLogo size="lg" />
         </Link>
 
         {/* System Database Status Indicator */}
@@ -100,41 +93,7 @@ export default function AdminLoginPage() {
             </p>
           </div>
 
-          {/* 1-Click SaaS Creator Portal Access */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 via-slate-50 to-indigo-50 border border-purple-200 text-center space-y-2.5 shadow-sm">
-            <div className="flex items-center justify-between text-xs text-purple-900 font-semibold">
-              <span className="flex items-center gap-1.5">
-                <UserCheck className="w-4 h-4 text-purple-600" />
-                SaaS Creator Access
-              </span>
-              <span className="text-[10px] text-emerald-700 font-mono font-bold">1-Click Launch</span>
-            </div>
-            <p className="text-[11px] text-slate-600 text-left font-medium">
-              Bypass login credentials to launch the **SaaS Super Admin Control Center** (`/admin`).
-            </p>
-            <button
-              type="button"
-              onClick={handleDemoAdminSignIn}
-              disabled={isLoading}
-              className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2"><RefreshCw className="w-4 h-4 animate-spin" /> Launching SaaS Admin Portal...</span>
-              ) : (
-                <>
-                  <span>Launch SaaS Creator Control Center</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </div>
 
-          <div className="relative flex items-center justify-center">
-            <div className="border-t border-slate-200 w-full" />
-            <span className="bg-white px-3 text-[10px] uppercase font-bold text-slate-400 absolute">
-              Or Sign In With Admin Credentials
-            </span>
-          </div>
 
           {/* Admin Sign In Form */}
           <form onSubmit={handleAdminSignIn} className="space-y-4 text-xs">

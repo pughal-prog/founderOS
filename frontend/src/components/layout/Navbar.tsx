@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 import { useFounderStore } from '@/hooks/useFounderStore';
+import FounderOSLogo from '@/components/ui/FounderOSLogo';
 import { 
   Search, 
   Bell, 
@@ -18,11 +19,17 @@ import {
   Sun,
   Moon,
   Building,
-  Plus
+  Plus,
+  Menu,
+  LayoutDashboard,
+  MessageSquareText,
+  AppWindow,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const { 
     userProfile, 
@@ -37,6 +44,7 @@ export default function Navbar() {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const connectedCount = integrations.filter(i => i.connected).length;
@@ -47,11 +55,21 @@ export default function Navbar() {
     .substring(0, 2)
     .toUpperCase();
 
+  const isAdmin = userProfile?.userType === 'admin' || (userProfile?.email && userProfile.email.toLowerCase().includes('admin'));
+
   const handleSignOut = () => {
     logout();
     setShowProfileMenu(false);
     router.push('/login');
   };
+
+  const navLinks = [
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'AI Chat', path: '/chat', icon: MessageSquareText },
+    { name: 'Connect Apps', path: '/connect-apps', icon: AppWindow },
+    ...(isAdmin ? [{ name: 'Super Admin', path: '/admin', icon: ShieldCheck }] : []),
+    { name: 'Settings', path: '/settings', icon: Settings },
+  ];
 
   const searchSuggestions = [
     { title: 'Sarah Jenkins (Acme Inc.)', type: 'Customer (Unreplied)', path: '/chat' },
@@ -67,15 +85,30 @@ export default function Navbar() {
   return (
     <header className="h-16 glass-panel border-b border-slate-200 px-4 sm:px-8 flex items-center justify-between z-30 shrink-0 sticky top-0 bg-white/90 backdrop-blur-md">
       
-      {/* Search Input Bar & Workspace Selector */}
-      <div className="flex items-center gap-4 flex-1 max-w-xl">
+      {/* Left: Mobile Menu Toggle & App Logo Link */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => setShowMobileMenu(!showMobileMenu)}
+          className="p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 md:hidden hover:bg-slate-200 transition-colors"
+          title="Toggle Navigation Menu"
+        >
+          {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+
+        <Link href="/dashboard" className="flex items-center gap-2 group">
+          <FounderOSLogo size="md" />
+        </Link>
+      </div>
+
+      {/* Center: Search Input Bar */}
+      <div className="flex items-center gap-4 flex-1 max-w-md mx-2 sm:mx-6">
         <div 
           onClick={() => setShowSearchModal(true)}
           className="relative flex-1 cursor-pointer group"
         >
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 group-hover:text-blue-600 transition-colors" />
           <div className="w-full bg-slate-100/90 border border-slate-200 rounded-xl py-2 pl-10 pr-12 text-xs text-slate-600 group-hover:border-blue-500/40 transition-colors flex items-center justify-between shadow-inner">
-            <span>Search metrics, customers, meetings, or ask AI...</span>
+            <span className="truncate">Search metrics, customers, meetings, or ask AI...</span>
             <kbd className="hidden sm:inline-block text-[10px] font-mono text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 font-semibold">
               ⌘K
             </kbd>
@@ -84,8 +117,30 @@ export default function Navbar() {
       </div>
 
       {/* Right User & System Status Actions */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         
+        {/* Quick Nav Links (Desktop) */}
+        <div className="hidden lg:flex items-center gap-1">
+          {navLinks.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  isActive
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+
         {/* Workspace Switcher Pill */}
         <div className="relative">
           <button
@@ -97,7 +152,7 @@ export default function Navbar() {
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 text-xs text-blue-900 font-bold transition-all"
           >
             <Building className="w-3.5 h-3.5 text-blue-600" />
-            <span>{currentWorkspace?.name || 'Primary Workspace'}</span>
+            <span className="truncate max-w-[120px]">{currentWorkspace?.name || 'Primary Workspace'}</span>
             <ChevronDown className="w-3 h-3 text-blue-500" />
           </button>
 
@@ -138,23 +193,10 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Role Indicator Badge */}
-        {userProfile?.userType === 'admin' || (userProfile?.email && userProfile.email.toLowerCase().includes('admin')) ? (
-          <span className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50 text-purple-900 border border-purple-300 font-extrabold text-[10px] uppercase shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" />
-            ADMIN MODE
-          </span>
-        ) : (
-          <span className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-xl bg-blue-50 text-blue-900 border border-blue-200 font-extrabold text-[10px] uppercase shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-blue-600" />
-            CUSTOMER WORKSPACE
-          </span>
-        )}
-
         {/* Connected Apps Status Pill */}
         <Link 
           href="/connect-apps"
-          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-400 text-xs transition-colors"
+          className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-400 text-xs transition-colors"
         >
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
@@ -240,11 +282,11 @@ export default function Navbar() {
                 {userInitials}
               </div>
             </div>
-            <div className="hidden lg:flex flex-col text-left">
+            <div className="hidden xl:flex flex-col text-left">
               <span className="text-xs font-bold text-slate-900 leading-none">{userProfile?.name || 'Alex Vance'}</span>
               <span className="text-[10px] text-slate-500 font-medium leading-tight">{userProfile?.role || 'Founder & CEO'}</span>
             </div>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden lg:block" />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden xl:block" />
           </button>
 
           {/* Profile Popover Menu */}
@@ -284,6 +326,35 @@ export default function Navbar() {
 
       </div>
 
+      {/* MOBILE NAVIGATION DRAWER */}
+      {showMobileMenu && (
+        <div className="fixed inset-x-0 top-16 bg-white/98 border-b border-slate-200 shadow-2xl z-40 p-4 md:hidden animate-in slide-in-from-top duration-200">
+          <div className="space-y-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 block">
+              Navigation Menu
+            </span>
+            {navLinks.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  onClick={() => setShowMobileMenu(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-extrabold transition-all ${
+                    isActive
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md'
+                      : 'text-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Interactive Global Search Modal */}
       {showSearchModal && (

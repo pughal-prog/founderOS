@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { X, Send, CheckCircle2, Calendar, Mail, CreditCard, Sparkles, Key, ShieldCheck } from 'lucide-react';
 import { useFounderStore } from '@/hooks/useFounderStore';
 
@@ -13,6 +14,7 @@ interface ActionModalProps {
 }
 
 export default function ActionModal({ isOpen, onClose, title, type, initialData }: ActionModalProps) {
+  const router = useRouter();
   const { connectAppWithToken } = useFounderStore();
   const [emailText, setEmailText] = useState(
     initialData?.notes || 'Hi Sarah,\n\nFollowing up on our recent security questionnaire. Please let me know if you need any additional compliance docs.\n\nBest,\nAlex Vance'
@@ -35,8 +37,11 @@ export default function ActionModal({ isOpen, onClose, title, type, initialData 
       setTimeout(() => {
         setSuccess(false);
         onClose();
-      }, 1200);
-    }, 800);
+        if (type === 'view') {
+          router.push('/dashboard');
+        }
+      }, 1000);
+    }, 600);
   };
 
   return (

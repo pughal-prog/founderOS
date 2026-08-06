@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { 
   ResponsiveContainer, 
   AreaChart, 
@@ -13,21 +14,57 @@ import {
   CartesianGrid 
 } from 'recharts';
 import { mockRevenueHistory } from '../../data/mockData';
+import { PlusCircle, ShieldAlert } from 'lucide-react';
 
-export function RevenueGrowthChart() {
+interface ChartProps {
+  isStripeConnected?: boolean;
+}
+
+export function RevenueGrowthChart({ isStripeConnected = true }: ChartProps) {
+  const chartData = isStripeConnected 
+    ? mockRevenueHistory 
+    : mockRevenueHistory.map(d => ({ ...d, revenue: 0, mrr: 0 }));
+
   return (
-    <div className="glass-panel p-6 rounded-3xl border border-slate-200 space-y-4 bg-white shadow-sm">
+    <div className="glass-panel p-6 rounded-3xl border border-slate-200 space-y-4 bg-white shadow-sm relative overflow-hidden">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-extrabold text-slate-900">Monthly Revenue & MRR Growth</h3>
-          <p className="text-xs text-slate-500 font-medium">Synthesized from Stripe Billing & QuickBooks</p>
+          <p className="text-xs text-slate-500 font-medium">
+            {isStripeConnected ? 'Synthesized from Stripe Billing & QuickBooks' : 'Stripe Billing Disconnected'}
+          </p>
         </div>
-        <span className="text-xs font-bold text-blue-700 font-mono bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">$82,500 Current MRR</span>
+        <span className={`text-xs font-bold font-mono px-2.5 py-1 rounded-lg border ${
+          isStripeConnected 
+            ? 'text-blue-700 bg-blue-50 border-blue-200' 
+            : 'text-slate-500 bg-slate-100 border-slate-200'
+        }`}>
+          {isStripeConnected ? '$82,500 Current MRR' : '$0 MRR'}
+        </span>
       </div>
 
-      <div className="w-full h-64">
+      <div className="w-full h-64 relative">
+        {!isStripeConnected && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-xs z-10 flex flex-col items-center justify-center p-6 text-center space-y-3 border border-dashed border-slate-300 rounded-2xl">
+            <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+            <div className="max-w-xs space-y-1">
+              <h4 className="text-xs font-bold text-slate-900">Stripe Billing Feed Standby</h4>
+              <p className="text-[11px] text-slate-500">Connect your Stripe account to sync live MRR telemetry & revenue projections.</p>
+            </div>
+            <Link
+              href="/connect-apps"
+              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-colors"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>Connect Stripe Integration</span>
+            </Link>
+          </div>
+        )}
+
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={mockRevenueHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorRevStripe" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
@@ -76,20 +113,44 @@ export function RevenueGrowthChart() {
   );
 }
 
-export function CustomerGrowthChart() {
+export function CustomerGrowthChart({ isStripeConnected = true }: ChartProps) {
+  const chartData = isStripeConnected 
+    ? mockRevenueHistory 
+    : mockRevenueHistory.map(d => ({ ...d, customers: 0 }));
+
   return (
-    <div className="glass-panel p-6 rounded-3xl border border-slate-200 space-y-4 bg-white shadow-sm">
+    <div className="glass-panel p-6 rounded-3xl border border-slate-200 space-y-4 bg-white shadow-sm relative overflow-hidden">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-extrabold text-slate-900">Active Customers Growth</h3>
-          <p className="text-xs text-slate-500 font-medium">Total paying enterprise accounts</p>
+          <p className="text-xs text-slate-500 font-medium">
+            {isStripeConnected ? 'Total paying enterprise accounts' : 'HubSpot / Stripe Disconnected'}
+          </p>
         </div>
-        <span className="text-xs font-bold text-emerald-700 font-mono bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">215 Customers</span>
+        <span className={`text-xs font-bold font-mono px-2.5 py-1 rounded-lg border ${
+          isStripeConnected 
+            ? 'text-emerald-700 bg-emerald-50 border-emerald-200' 
+            : 'text-slate-500 bg-slate-100 border-slate-200'
+        }`}>
+          {isStripeConnected ? '215 Customers' : '0 Customers'}
+        </span>
       </div>
 
-      <div className="w-full h-64">
+      <div className="w-full h-64 relative">
+        {!isStripeConnected && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-xs z-10 flex flex-col items-center justify-center p-6 text-center space-y-3 border border-dashed border-slate-300 rounded-2xl">
+            <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+            <div className="max-w-xs space-y-1">
+              <h4 className="text-xs font-bold text-slate-900">Customer Metrics Standby</h4>
+              <p className="text-[11px] text-slate-500">Connect HubSpot CRM or Stripe to visualize customer acquisition trajectory.</p>
+            </div>
+          </div>
+        )}
+
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={mockRevenueHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
             <XAxis dataKey="month" stroke="#64748b" tick={{ fontSize: 11 }} />
             <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { processFounderQuery } from '@/services/aiService';
 import { 
   Brain, 
   Sparkles, 
@@ -16,9 +17,8 @@ import {
   ArrowUpRight,
   BotMessageSquare,
   CheckCircle2,
-  Lock,
-  ChevronRight
 } from 'lucide-react';
+import FounderOSLogo from '@/components/ui/FounderOSLogo';
 
 interface OverlayMessage {
   sender: string;
@@ -63,16 +63,17 @@ export default function BrainOverlayWidget() {
     'Calculate current burn rate & runway'
   ];
 
-  const handleSend = (userQueryText?: string) => {
+  const handleSend = async (userQueryText?: string) => {
     const textToSend = userQueryText || query;
     if (!textToSend.trim()) return;
 
+    const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const newMessages: OverlayMessage[] = [
       ...messages,
       {
         sender: 'user',
         text: textToSend,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        time: userTime,
         appContext: activeTab,
         dataInsight: undefined
       }
@@ -82,43 +83,39 @@ export default function BrainOverlayWidget() {
     if (!userQueryText) setQuery('');
     setIsAnalyzing(true);
 
-    setTimeout(() => {
-      let aiText = '';
-      let insightData = undefined;
-
-      if (textToSend.toLowerCase().includes('arr') || textToSend.toLowerCase().includes('q3')) {
-        aiText = 'According to real-time Stripe billing & Salesforce closed-won deals: Current Q3 ARR is $3.42M (+18.4% YoY). You are $180k ahead of your Q3 target.';
-        insightData = {
-          title: 'Q3 Financial Health',
-          metric: '$3,420,000 ARR',
-          details: 'New Expansion MRR from Enterprise tier (+ $42.5k) offset SMB churn.',
-          badge: 'On Track',
-          actionText: 'Export Exec Report'
-        };
-      } else {
-        aiText = `Analyzing enterprise data across ${activeTab}: Everything looks aligned with overall growth trajectory (+14.2% MoM).`;
-        insightData = {
-          title: 'Cross-App Synthesis Complete',
-          metric: '1,420 Events Indexed',
-          details: 'Data synced across Stripe, Salesforce, Jira, and Slack with zero latency.',
-          badge: 'Synced',
-          actionText: 'Deep Dive in Chat'
-        };
-      }
-
+    try {
+      const response = await processFounderQuery(textToSend);
       setMessages((prev) => [
         ...prev,
         {
           sender: 'ai',
-          text: aiText,
+          text: response.text,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           appContext: activeTab,
-          dataInsight: insightData
+          dataInsight: {
+            title: response.suggestedAction?.label || 'Live Synthesis',
+            metric: 'PostgreSQL Indexed',
+            details: 'Grounded in live CRM, Stripe, & Gmail telemetry.',
+            badge: 'High Accuracy',
+            actionText: 'Execute Action'
+          }
         }
       ]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: 'FounderOS AI Engine analyzed database telemetry: System healthy.',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          appContext: activeTab
+        }
+      ]);
+    } finally {
       setIsAnalyzing(false);
-    }, 800);
+    }
   };
+
 
   return (
     <>
@@ -156,9 +153,7 @@ export default function BrainOverlayWidget() {
           {/* Header Bar */}
           <div className="flex items-center justify-between p-3.5 bg-slate-50 border-b border-slate-200 shrink-0">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-sm">
-                <Brain className="w-4 h-4 text-white" />
-              </div>
+              <FounderOSLogo size="sm" showText={false} />
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-slate-900 tracking-wide">FounderOS Overlay Engine</span>

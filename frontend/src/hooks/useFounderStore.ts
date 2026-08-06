@@ -34,6 +34,20 @@ const defaultUserProfile: UserProfile = {
   supabaseUrl: 'https://xyz-app.supabase.co'
 };
 
+const getDisconnectedIntegrations = (): IntegrationApp[] => {
+  return mockIntegrations.map(app => ({
+    ...app,
+    connected: false,
+    status: 'disconnected',
+    lastSynced: 'Never',
+    healthStatus: undefined,
+    authToken: undefined,
+    apiKey: undefined,
+    clientSecret: undefined,
+    connectedUser: undefined
+  }));
+};
+
 export function useFounderStore() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
@@ -62,19 +76,29 @@ export function useFounderStore() {
         setWorkspaces(JSON.parse(savedWorkspaces));
       }
 
-      const savedWsId = localStorage.getItem(STORAGE_KEYS.CURRENT_WS_ID);
-      if (savedWsId) {
-        setCurrentWorkspaceId(savedWsId);
-      }
+      const savedWsId = localStorage.getItem(STORAGE_KEYS.CURRENT_WS_ID) || 'ws-main';
+      setCurrentWorkspaceId(savedWsId);
 
-      const savedIntegrations = localStorage.getItem(STORAGE_KEYS.INTEGRATIONS);
+      // Load integrations scoped to currentWorkspaceId
+      const savedIntegrations = localStorage.getItem(`founderos_integrations_${savedWsId}`);
       if (savedIntegrations) {
         setIntegrations(JSON.parse(savedIntegrations));
+      } else if (savedWsId === 'ws-main') {
+        const legacyIntegrations = localStorage.getItem(STORAGE_KEYS.INTEGRATIONS);
+        setIntegrations(legacyIntegrations ? JSON.parse(legacyIntegrations) : mockIntegrations);
+      } else {
+        setIntegrations(getDisconnectedIntegrations());
       }
 
-      const savedTenants = localStorage.getItem(STORAGE_KEYS.CLIENT_TENANTS);
+      // Load client companies scoped to currentWorkspaceId
+      const savedTenants = localStorage.getItem(`founderos_client_tenants_${savedWsId}`);
       if (savedTenants) {
         setClientTenants(JSON.parse(savedTenants));
+      } else if (savedWsId === 'ws-main') {
+        const legacyTenants = localStorage.getItem(STORAGE_KEYS.CLIENT_TENANTS);
+        setClientTenants(legacyTenants ? JSON.parse(legacyTenants) : mockClientTenants);
+      } else {
+        setClientTenants([]);
       }
     } catch (e) {
       console.error('Error hydrating FounderOS state from localStorage:', e);
@@ -91,14 +115,18 @@ export function useFounderStore() {
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userProfile));
       localStorage.setItem(STORAGE_KEYS.WORKSPACES, JSON.stringify(workspaces));
       localStorage.setItem(STORAGE_KEYS.CURRENT_WS_ID, currentWorkspaceId);
-      localStorage.setItem(STORAGE_KEYS.INTEGRATIONS, JSON.stringify(integrations));
-      localStorage.setItem(STORAGE_KEYS.CLIENT_TENANTS, JSON.stringify(clientTenants));
+      localStorage.setItem(`founderos_integrations_${currentWorkspaceId}`, JSON.stringify(integrations));
+      localStorage.setItem(`founderos_client_tenants_${currentWorkspaceId}`, JSON.stringify(clientTenants));
     } catch (e) {
       console.error('Error saving FounderOS state to localStorage:', e);
     }
   }, [isHydrated, isAuthenticated, userProfile, workspaces, currentWorkspaceId, integrations, clientTenants]);
 
-  const currentWorkspace = workspaces.find(w => w.id === currentWorkspaceId) || workspaces[0] || defaultWorkspaces[0];
+  const rawWorkspace = workspaces.find(w => w.id === currentWorkspaceId) || workspaces[0] || defaultWorkspaces[0];
+  const currentWorkspace = {
+    ...rawWorkspace,
+    connectedAppsCount: integrations.filter(i => i.connected).length
+  };
 
   // Tenant Actions for SaaS Super Admin
   const toggleTenantStatus = (tenantId: string) => {
@@ -162,24 +190,40 @@ export function useFounderStore() {
       id: newWsId,
       name: `${companyName} Workspace`,
       companyName: companyName,
-      domain: email.split('@')[1] || 'founderos.io',
+      domain: email ? email.split('@')[1] || 'founderos.io' : 'founderos.io',
       role: 'Workspace Owner & Founder',
       createdAt: new Date().toISOString().split('T')[0],
-      connectedAppsCount: 0
+      connectedAppsCount: 0 // New workspace starts with ZERO connected apps
     };
 
     const updatedUser: UserProfile = {
       id: `usr-${Date.now()}`,
       name: fullName || 'Founder',
-      email: email,
+      email: email || 'founder@founderos.io',
       role: 'Founder & CEO',
-      company: companyName,
+      company: companyName || 'New Startup Inc.',
       currentWorkspaceId: newWsId
     };
+
+    // Every NEW workspace starts with all apps DISCONNECTED and an EMPTY company/tenant list
+    const newWsIntegrations = getDisconnectedIntegrations();
+    const newWsTenants: ClientCompanyTenant[] = [];
+
+    try {
+      localStorage.setItem(`founderos_integrations_${newWsId}`, JSON.stringify(newWsIntegrations));
+      localStorage.setItem(`founderos_client_tenants_${newWsId}`, JSON.stringify(newWsTenants));
+      localStorage.setItem(STORAGE_KEYS.CURRENT_WS_ID, newWsId);
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+      localStorage.setItem(STORAGE_KEYS.AUTH, JSON.stringify(true));
+    } catch (e) {
+      console.error('Error persisting new workspace state:', e);
+    }
 
     setWorkspaces(prev => [...prev, newWorkspace]);
     setCurrentWorkspaceId(newWsId);
     setUserProfile(updatedUser);
+    setIntegrations(newWsIntegrations);
+    setClientTenants(newWsTenants);
     setIsAuthenticated(true);
   };
 
@@ -189,6 +233,31 @@ export function useFounderStore() {
     if (targetWs) {
       setCurrentWorkspaceId(workspaceId);
       setUserProfile(prev => ({ ...prev, currentWorkspaceId: workspaceId, company: targetWs.companyName }));
+
+      // Load integrations for target workspace
+      let wsIntegrations: IntegrationApp[];
+      const savedIntegrations = localStorage.getItem(`founderos_integrations_${workspaceId}`);
+      if (savedIntegrations) {
+        wsIntegrations = JSON.parse(savedIntegrations);
+      } else if (workspaceId === 'ws-main') {
+        wsIntegrations = mockIntegrations;
+      } else {
+        wsIntegrations = getDisconnectedIntegrations();
+      }
+
+      // Load client companies for target workspace
+      let wsTenants: ClientCompanyTenant[];
+      const savedTenants = localStorage.getItem(`founderos_client_tenants_${workspaceId}`);
+      if (savedTenants) {
+        wsTenants = JSON.parse(savedTenants);
+      } else if (workspaceId === 'ws-main') {
+        wsTenants = mockClientTenants;
+      } else {
+        wsTenants = [];
+      }
+
+      setIntegrations(wsIntegrations);
+      setClientTenants(wsTenants);
     }
   };
 
@@ -351,4 +420,5 @@ export function useFounderStore() {
     onboardClientTenant
   };
 }
+
 

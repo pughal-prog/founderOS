@@ -20,9 +20,14 @@ export const openaiClient: OpenAI | null = isOpenAIConfigured()
   ? new OpenAI({ apiKey })
   : null;
 
-const BASE_SYSTEM_PROMPT = `You are FounderOS AI, an intelligent executive assistant for SaaS founders and startup leaders. 
-Your goal is to provide concise, actionable insights on MRR, churn, customer success, team tasks, investor meetings, and financial health based on live database data.
-Be direct, professional, and clear. Format responses nicely using Markdown formatted text when helpful.`;
+const BASE_SYSTEM_PROMPT = `You are FounderOS AI, an elite executive operating system and AI assistant for SaaS founders and startup leadership.
+Your mission is to provide accurate, data-backed insights on Monthly Recurrent Revenue (MRR), customer churn risk, overdue invoices, Gmail inbox follow-ups, team priorities, and investor meetings based strictly on live PostgreSQL database telemetry.
+
+RULES FOR ACCURACY & EXCELLENCE:
+1. Always base key figures, metrics, customer names, and invoice details strictly on the retrieved Live Database Context.
+2. If specific figures are present in the context, present them explicitly using bold Markdown formatting (e.g. **$89,000 MRR**, **Acme Inc.**).
+3. Be concise, direct, and structured. Use bullet points and clean Markdown formatting for readability.
+4. When relevant, highlight actionable next steps for the founder to take.`;
 
 export async function generateOpenAIResponse(
   userPrompt: string, 
@@ -53,7 +58,7 @@ export async function generateOpenAIResponse(
     const response = await openaiClient.chat.completions.create({
       model,
       messages,
-      temperature: 0.7,
+      temperature: 0.2, // Low temperature for high factual accuracy
       max_tokens: 800
     });
 
@@ -80,14 +85,13 @@ export async function streamOpenAIResponse(
   const liveDbContext = await buildSystemContextString(userPrompt);
 
   if (!isOpenAIConfigured() || !openaiClient) {
-    // Simulated smooth streaming chunking for local AI engine
+    // Fast, smooth token streaming for local AI engine
     const words = localFallback.replyText.split(' ');
 
     for (const word of words) {
       const chunk = word + ' ';
       onChunk(chunk);
-      // Small 25ms delay between tokens for smooth streaming effect
-      await new Promise(resolve => setTimeout(resolve, 25));
+      await new Promise(resolve => setTimeout(resolve, 15));
     }
 
     return {
@@ -111,7 +115,7 @@ export async function streamOpenAIResponse(
     const stream = await openaiClient.chat.completions.create({
       model,
       messages,
-      temperature: 0.7,
+      temperature: 0.2,
       max_tokens: 800,
       stream: true
     });
@@ -136,7 +140,7 @@ export async function streamOpenAIResponse(
     for (const word of words) {
       const chunk = word + ' ';
       onChunk(chunk);
-      await new Promise(resolve => setTimeout(resolve, 25));
+      await new Promise(resolve => setTimeout(resolve, 15));
     }
 
     return {
@@ -145,3 +149,4 @@ export async function streamOpenAIResponse(
     };
   }
 }
+

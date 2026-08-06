@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Sidebar from '@/components/layout/Sidebar';
 import ChatBubble from '@/components/chat/ChatBubble';
@@ -23,6 +24,7 @@ import {
 } from 'lucide-react';
 
 export default function AIChatPage() {
+  const router = useRouter();
   const [activeThread, setActiveThread] = useState('Unreplied Customers & Risk Audit');
   const [isStreaming, setIsStreaming] = useState(false);
   const [selectedContext, setSelectedContext] = useState('All 9 Connected SaaS Tools');
@@ -80,6 +82,10 @@ export default function AIChatPage() {
 
   const handleActionClick = (action: ChatMessage['suggestedAction']) => {
     if (!action) return;
+    if (action.actionType === 'view') {
+      router.push('/dashboard');
+      return;
+    }
     setModalTitle(action.label);
     setModalType(action.actionType || 'view');
     setModalOpen(true);
