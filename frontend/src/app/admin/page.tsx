@@ -120,7 +120,7 @@ export default function AdminSuperPortalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white flex flex-col selection:bg-purple-600 selection:text-white">
+    <div className="h-screen bg-slate-900 text-white flex flex-col overflow-hidden selection:bg-purple-600 selection:text-white">
       
       {/* Top Navigation */}
       <Navbar />

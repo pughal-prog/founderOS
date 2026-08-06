@@ -56,7 +56,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 shrink-0 glass-panel border-r border-slate-200 min-h-[calc(100vh-64px)] flex flex-col justify-between p-4 hidden md:flex bg-white/80 backdrop-blur-xl selection:bg-blue-600 selection:text-white">
+    <aside className="w-64 shrink-0 glass-panel border-r border-slate-200 h-full flex flex-col justify-between p-4 hidden md:flex bg-white/80 backdrop-blur-xl selection:bg-blue-600 selection:text-white overflow-y-auto">
       <div className="space-y-6">
         
         {/* Workspace Selector Dropdown */}
